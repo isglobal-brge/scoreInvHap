@@ -1,12 +1,12 @@
 ---
 title: "Call inversions with SNPfier"
-subtitle: "Carlos Ruiz, Carles Hernández, Juan R. González"
+subtitle: "Carlos Ruiz, Juan R. Gonz�lez"
 author: |
-  | Center for Research in Environmental Epidemiology (CREAL), Barcelona, Spain
+  | Institute for Global Health (ISGlobal), Barcelona, Spain
   | Bioinformatics Research Group in Epidemiolgy (BRGE)
   | (<http://www.creal.cat/brge.htm>)
 date: "`r Sys.Date()`"
-package: "`r pkg_ver('SNPfier')`"
+package: "`r pkg_ver('snpfier')`"
 output: 
   BiocStyle::html_document:
     number_sections: true
@@ -20,7 +20,7 @@ vignette: >
 
 # Introduction
 
-`r Rpackage("SNPfier")` infers the inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs and a reference of inverted and standard samples. The inversion status is infered by applying a Linear Discriminant Analysis (LDA) model to the similarity scores.
+`r Rpackage("snpfier")` infers haplotype inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs and a reference of inverted and standard samples. The inversion status is infered by applying a Linear Discriminant Analysis (LDA) model to the similarity scores.
 
 # Inversion characterization
 
