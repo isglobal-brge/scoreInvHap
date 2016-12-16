@@ -1,0 +1,24 @@
+Package: SNPfier
+Title: Get inversion status in predefined regions
+Version: 0.99.1
+Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
+  person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
+Description: SNPfier can get the samples' inversion status of known inversions. SNPfier uses SNP data as
+ input and requires the following information about the inversion: genotype frequencies in the different
+ inversion groups, R2 between the region SNPs and inversion status, heterozygote genotypes in the
+ reference and a LDA model. The package include this data for two well known inversions (8p23 and 17q21.31) and for four additional regions.
+Depends:
+    R (>= 3.3.0)
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
+Imports: Biostrings,
+    parallel,
+    stats,
+    methods,
+    MASS
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
