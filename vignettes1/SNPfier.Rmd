@@ -1,5 +1,5 @@
 ---
-title: "Call inversions with SNPfier"
+title: "Call inversions with snpfier"
 subtitle: "Carlos Ruiz, Juan R. González"
 author: |
   | Institute for Global Health (ISGlobal), Barcelona, Spain
@@ -13,7 +13,7 @@ output:
     toc: yes
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Call inversions with SNPfier}
+  %\VignetteIndexEntry{Call inversions with snpfier}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,14 +24,14 @@ vignette: >
 
 # Inversion characterization
 
-`r Rpackage("SNPfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. In this package, we have included these objects for six genomic inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3,  ROIno.16.13 and ROIno.17.16). These objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. 
+`r Rpackage("snpfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. In this package, we have included these objects for six genomic inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3,  ROIno.16.13 and ROIno.17.16). These objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. 
 
 ## References
 
 The algorithm needs, for each SNP, the frequency of each genotype in the homozygous standard, heterozygous and homozygous inverted populations. This information can be found in the `Refs` object:
 
 ```{r, load data}
-library(SNPfier)
+library(snpfier)
 data("Refs")
 names(Refs)
 ```
@@ -82,14 +82,14 @@ lda <- ldamodels$ROIno.8.3
 lda
 ```
 
-# Running SNPfier 
+# Running snpfier 
 
-`r Rpackage("SNPfier")` works with data in the plink format. Therefore, the input is a list with at least two elements:
+`r Rpackage("snpfier")` works with data in the plink format. Therefore, the input is a list with at least two elements:
 
 * genotypes: a SNPMatrix with individuals in rows and SNPs in columns
 * map: a data.frame with the SNPs annotation. It *must* contain the columns *allele.1* and *allele.2* with the alleles of the SNPs. 
 
-We have included in the `r Rpackage("brgeDummyData")` package some SNPs to show `r Rpackage("SNPfier")` capabilities. The object `snpsVCF` contains a subset of SNPs from the 1000 Genomes project. All these SNPs are from chromosome 8 and the individuals are from the European and African superpopulations:
+We have included in the `r Rpackage("brgeDummyData")` package some SNPs to show `r Rpackage("snpfier")` capabilities. The object `snpsVCF` contains a subset of SNPs from the 1000 Genomes project. All these SNPs are from chromosome 8 and the individuals are from the European and African superpopulations:
 
 ```{r, Load SNPs, message=FALSE}
 library(brgeDummyData)
@@ -116,9 +116,9 @@ res <- classifierPipeline(SNPlist = EUR, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = he
 res
 ```
 
-The results of `classifierPipeline` are encapsulated in a `SNPfieRes` object. This object contains the classification of the samples, the certainty of the classification and the simmilarity scores. We can get this data with the following functions: 
+The results of `classifierPipeline` are encapsulated in a `snpfieres` object. This object contains the classification of the samples, the certainty of the classification and the simmilarity scores. We can get this data with the following functions: 
 
-```{r, SNPfier results}
+```{r, snpfier results}
 # Get classification
 head(classification(res))
 # Get certainty
