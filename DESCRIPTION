@@ -1,4 +1,4 @@
-Package: SNPfier
+Package: snpfier
 Title: Get inversion status in predefined regions
 Version: 0.99.1
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
@@ -20,5 +20,6 @@ Imports: Biostrings,
     MASS
 Suggests: testthat,
     knitr,
+    BiocStyle,
     rmarkdown
 VignetteBuilder: knitr
