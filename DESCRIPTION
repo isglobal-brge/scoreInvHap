@@ -17,6 +17,7 @@ Imports: Biostrings,
     parallel,
     stats,
     methods,
+    snpStats,
     MASS
 Suggests: testthat,
     knitr,
