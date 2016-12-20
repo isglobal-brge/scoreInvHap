@@ -1,6 +1,6 @@
 ---
 title: "Call inversions with snpfier"
-subtitle: "Carlos Ruiz, Juan R. González"
+subtitle: "Carlos Ruiz, Juan R. Gonzalez"
 author: |
   | Institute for Global Health (ISGlobal), Barcelona, Spain
   | Bioinformatics Research Group in Epidemiolgy (BRGE)
@@ -13,18 +13,29 @@ output:
     toc: yes
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Call inversions with snpfier}
+  %\VignetteIndexEntry{Call haplotype inversions with snpfier}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE)
+```
+
 # Introduction
 
-`r Rpackage("snpfier")` infers haplotype inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs and a reference of inverted and standard samples. The inversion status is infered by applying a Linear Discriminant Analysis (LDA) model to the similarity scores.
+`r Rpackage("snpfier")` infers haplotype inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs and a reference of inverted and standard samples. These scores are then used to infer the haplotype inversion status by applying a Linear Discriminant Analysis (LDA) model. There are other approaches to perform this task such us [inveRsion](https://bioconductor.org/packages/release/bioc/html/inveRsion.html), [invClust](http://nar.oxfordjournals.org/content/early/2015/02/05/nar.gkv073.full) or [PFIDO](https://github.com/MaxSalm/pfido) that are based on multivariate clustering procedures. Using these methods have several limitation when:
+
+* __analizing limited or moderate number of samples__. Clustering methods require to have large number of samples to perform clustering to properly discriminate haplotype inversion status. In particular, calling of a single sample cannot be performed without having a reference data. 
+* __analyzing data from different SNP arrays__ .  `r Rpackage("PFIDO")` and `r Rpackage("invClust")` may provide different answers depending on which array is used (i.e., Illumina 1M, Affy 6.0, ...) since dfferent coverage may lead to perform the calling using different number of SNPs of a given inverted region. 
+* __combining calling from different SNP arrrays__ . `r Rpackage("invClust")` and `r Rpackage("PFIDO")` clasify each individual as homocygous normal, heterozygous or homocigous inverted depending on cluster frequency. In those cases where inversion with haplotype frequency is close to 50%, both methods may have problems to determine which is the reference haplotype. Performing calling in different cohort of samples may lead to wrong results when combining data from different studies.
+
+`r Rpackage("snpfier")` overcomes these difficulties by using a set of reference genotypes that has been used to properly characterize the inversion of interest. Genomic information such as linkage desequillibrium (R^2^) and hetgerozygous sequence has been determined for the region of interest. The LDA models has been extensively trained by using large real dataset from different ethnicities. These models are used to predict haplotype inversion genotypes in samples of interest.  
 
 # Inversion characterization
 
-`r Rpackage("snpfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. In this package, we have included these objects for six genomic inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3,  ROIno.16.13 and ROIno.17.16). These objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. 
+`r Rpackage("snpfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. This package contains these required objects for six well known genomic inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3,  ROIno.16.13 and ROIno.17.16 (**Carlos, Pon el nombre de las inversiones**). The objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. This code can be modify to create the required files of any other inversion of interest. 
 
 ## References
 
