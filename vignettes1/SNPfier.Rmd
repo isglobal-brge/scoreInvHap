@@ -35,7 +35,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE)
 
 # Inversion characterization
 
-`r Rpackage("snpfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. This package contains these required objects for six well known genomic inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3,  ROIno.16.13 and ROIno.17.16 (**Carlos, Pon el nombre de las inversiones**). The objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. This code can be modify to create the required files of any other inversion of interest. 
+`r Rpackage("snpfier")` needs four objects that characterize the inversion: the references genotypes, the SNPs R^2^, the heterozygous reference and the LDA models. This package contains these required objects for six well known genomic inversions (ROIno.2.13/2q13, ROIno.3.2/3q29, ROIno.7.10/7q11.21, ROIno.8.3/8p23, ROIno.16.13/16p11.2 and ROIno.17.16/17q21.31 (**He añadido la localización. El nombre es el de Sanders.**). The objects have been created using VCF phase 3 data of 1000 Genomes Project. The code used to generate them can be found in the /inst/scripts folder of the package. This code can be modify to create the required files of any other inversion of interest. 
 
 ## References
 
