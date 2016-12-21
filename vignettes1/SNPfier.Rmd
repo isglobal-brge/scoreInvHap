@@ -130,7 +130,7 @@ EUR$genotypes <- EUR$genotypes[EURsamps, ]
 Now we are ready to classify the samples. The function `classifierPipeline` needs five objects: the genotypes and their annotation (`SNPlist`) and the four objects that characterize the inversion. `Refs` is the list of matrices with the frequency of each genotypes in each inversion population. `SNPsR2` is the numeric vector with the SNPs R^2^. `hetRefs` is the vector with the heterozygous genotypes of the SNPs and `ldamodel` is the LDA model used to classify the individuals. We will get the inversion status of the inversion ROIno.8.3:  
 
 ```{r, classify EUR}
-res <- classifierPipeline(SNPlist = EUR, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = hetRefs, 
+res <- classifierPipeline(SNPlist = EUR, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = hetRefs$ROIno.8.3, 
                           Refs = Refs$ROIno.8.3, ldamodel = ldamodels$ROIno.8.3)
 res
 ```
@@ -165,9 +165,10 @@ There are two additional parameters of `classifierPipeline` than can reduce its 
 In the next lines, we will show what happens when the haplotype references do not agree with the haplotypes present in our samples. As mentioned before, the references included in the package have been created from European samples and might not be right for other superpopulations. We will run the same analysis but including the African samples. To speed up the process, we will select only those SNPs with a R^2^ higher than 0.4 and we will use 4 cores:
 
 ```{r, classify all}
-resAll <- classifierPipeline(SNPlist = snpsVCF, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = hetRefs, 
-                          Refs = Refs$ROIno.8.3, ldamodel = ldamodels$ROIno.8.3, 
-                          R2 = 0.4, mc.cores = 4)
+resAll <- classifierPipeline(SNPlist = snpsVCF, SNPsR2 = SNPsR2$ROIno.8.3, 
+                             hetRefs = hetRefs$ROIno.8.3, Refs = Refs$ROIno.8.3, 
+                             ldamodel = ldamodels$ROIno.8.3, 
+                             R2 = 0.4, mc.cores = 4)
 resAll
 ```
 
