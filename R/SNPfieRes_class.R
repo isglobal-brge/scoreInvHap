@@ -78,7 +78,7 @@ setMethod(
   definition = function(x, ...) {
     sc <- scores(x)
     plot(sc[, 1], sc[, 2], col = classification(x), xlab = "Standard Score",
-         ylab = "Inverted score", ...)
+         ylab = "Inverted score", xlim = c(0, 1), ylim = c(0, 1), ...)
     legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = 1:3)
   }
 )
