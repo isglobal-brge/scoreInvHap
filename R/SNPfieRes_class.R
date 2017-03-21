@@ -77,7 +77,7 @@ setMethod(
   signature = "SNPfieRes",
   definition = function(x, ...) {
     sc <- scores(x)
-    cl <- classification(x)
+    cl <- as.character(classification(x))
     colors <- c("red", "green", "blue")
     names(colors) <- c("NI/NI", "NI/I", ("I/I"))
     plot(sc[, 1], sc[, 2], col = colors[cl], xlab = "Standard Score",
