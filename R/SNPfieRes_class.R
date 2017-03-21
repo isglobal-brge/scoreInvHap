@@ -79,7 +79,7 @@ setMethod(
     sc <- scores(x)
     cl <- classification(x)
     colors <- c("red", "green", "blue")
-    names(cl) <- c("NI/NI", "NI/I", ("I/I"))
+    names(colors) <- c("NI/NI", "NI/I", ("I/I"))
     plot(sc[, 1], sc[, 2], col = colors[cl], xlab = "Standard Score",
          ylab = "Inverted score", xlim = c(0, 1), ylim = c(0, 1), ...)
     legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = colors)
