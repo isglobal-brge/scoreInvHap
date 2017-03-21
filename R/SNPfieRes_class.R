@@ -78,12 +78,11 @@ setMethod(
   definition = function(x, ...) {
     sc <- scores(x)
     cl <- classification(x)
-    if (levels(cl) == c("I/I", "NI/I", "NI/NI")){
-      cl <- factor(as.character(cl), labels = c("NI/NI", "NI/I", "I/I"))
-    }
-    plot(sc[, 1], sc[, 2], col = cl, xlab = "Standard Score",
+    colors <- c("red", "green", "blue")
+    names(cl) <- c("NI/NI", "NI/I", ("I/I"))
+    plot(sc[, 1], sc[, 2], col = colors[cl], xlab = "Standard Score",
          ylab = "Inverted score", xlim = c(0, 1), ylim = c(0, 1), ...)
-    legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = 1:3)
+    legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = colors)
   }
 )
 
