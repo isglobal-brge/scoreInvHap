@@ -4,7 +4,7 @@
 \alias{classifSNPspar}
 \title{Get similarity scores}
 \usage{
-classifSNPspar(genos, R2, refs, thres, mc.cores)
+classifSNPspar(genos, R2, refs, mc.cores)
 }
 \arguments{
 \item{genos}{Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}}
@@ -13,8 +13,6 @@ classifSNPspar(genos, R2, refs, thres, mc.cores)
 
 \item{refs}{List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 homozygous inverted, homozygous standard and heterozygous samples.}
-
-\item{thres}{Numeric with the minimum R2 that a SNP should have to be considered in the computation}
 
 \item{mc.cores}{Numeric with the number of cores used in the computation}
 }

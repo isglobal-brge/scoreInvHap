@@ -19,7 +19,6 @@
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
 #' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 #' homozygous inverted, homozygous standard and heterozygous samples.
-#' @param thres Numeric with the minimum R2 that a SNP should have to be considered in the computation
 #' @param mc.cores Numeric with the number of cores used in the computation
 #' @return Matrix with the standard and inverted scores for each individual. Samples are in columns and
 #' scores in rows
@@ -31,6 +30,7 @@ classifSNPspar <- function(genos, R2, refs, mc.cores){
     R2 <- R2[common]
     genos <- genos[, common]
     refs <- refs[common]
+    numrefs <- nrow(refs[[1]])
 
     if (length(common) == 0){
       res <- matrix(0, nrow = 2, ncol = nrow(genos))
@@ -43,17 +43,15 @@ classifSNPspar <- function(genos, R2, refs, mc.cores){
                      function(ind) {
                        rowSums(sapply(colnames(genos), function(geno){
                          gen <- genos[ind, geno]
+                         a <- rep(0, numrefs)
                          if (gen %in% colnames(refs[[geno]])){
-                           a <- rep(0, 3)
-                           a[which.max(refs[[geno]][, gen])] <- R2[geno]
-                           a[-2]
-                         } else{
-                           rep(0, 2)
+                           a <- refs[[geno]][, gen]*R2[geno]
                          }
+                         a
                        }))
                      }, mc.cores = mc.cores)
-    res <- matrix(unlist(res), nrow = 2)
-    rownames(res) <- c("std", "inv")
+    res <- matrix(unlist(res), nrow = numrefs)
+    rownames(res) <- rownames(refs[[1]])
     colnames(res) <- rownames(genos)
     res <- res/sum(R2[colnames(genos)])
     res

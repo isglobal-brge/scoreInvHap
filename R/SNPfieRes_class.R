@@ -43,7 +43,6 @@ setGeneric("certainty", function(object){
 
 #' @describeIn SNPfieRes Get classification certainty
 #' @aliases SNPfieRes-methods certainty
-#' @param object \code{SNPfieRes}
 setMethod(
   f = "certainty",
   signature = "SNPfieRes",
@@ -60,7 +59,6 @@ setGeneric("scores", function(object){
 
 #' @describeIn SNPfieRes Get samples similarity scores
 #' @aliases SNPfieRes-methods scores
-#' @param object \code{SNPfieRes}
 setMethod(
   f = "scores",
   signature = "SNPfieRes",
@@ -69,22 +67,22 @@ setMethod(
   }
 )
 
-#' @describeIn SNPfieRes Plot samples similarity scores
-#' @aliases SNPfieRes-methods plot
-#' @param object \code{SNPfieRes}
-setMethod(
-  f = "plot",
-  signature = "SNPfieRes",
-  definition = function(x, ...) {
-    sc <- scores(x)
-    cl <- as.character(classification(x))
-    colors <- c("red", "green", "blue")
-    names(colors) <- c("NI/NI", "NI/I", ("I/I"))
-    plot(sc[, 1], sc[, 2], col = colors[cl], xlab = "Standard Score",
-         ylab = "Inverted score", xlim = c(0, 1), ylim = c(0, 1), ...)
-    legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = colors)
-  }
-)
+# #' @describeIn SNPfieRes Plot samples similarity scores
+# #' @aliases SNPfieRes-methods plot
+# #' @param object \code{SNPfieRes}
+# setMethod(
+#   f = "plot",
+#   signature = "SNPfieRes",
+#   definition = function(x, ...) {
+#     sc <- scores(x)
+#     cl <- as.character(classification(x))
+#     colors <- c("red", "green", "blue")
+#     names(colors) <- c("NI/NI", "NI/I", ("I/I"))
+#     plot(sc[, 1], sc[, 2], col = colors[cl], xlab = "Standard Score",
+#          ylab = "Inverted score", xlim = c(0, 1), ylim = c(0, 1), ...)
+#     legend("topright", c("NI/NI", "NI/I", "I/I"), pch = 16, col = colors)
+#   }
+# )
 
 setMethod(
   f = "show",
@@ -93,10 +91,17 @@ setMethod(
     class <- classification(object)
     cat("SNPfieRes\n")
     cat("Samples: ", length(class), "\n")
-    cat("Genotypes' table:\nNN\tNI\tII\n", sum(class == "NI/NI"), "\t",
-        sum(class == "NI/I"), "\t", sum(class == "I/I"), "\n")
-    cat(sprintf("Inversion frequency: %.2f%%\n",
-            sum(c(class == "NI/I", (class == "I/I") * 2))*100/(length(class)*2)))
+    tab <- table(class)
+    cat("Genotypes' table:\n", paste0(names(tab), "\t"), "\n", paste0(tab, "\t"), "\n")
+    if (all(grepl("N", names(tab)) | grepl("I", names(tab)))){
+      N <- lengths(regmatches(names(tab), gregexpr("N", names(tab))))
+      invtab <- c(NN = sum(tab[N == 2]), NI = sum(tab[N == 1]),
+                  II = sum(tab[N == 0]))
+    cat("- Inversion genotypes' table:\n",
+        paste0(names(invtab), "\t"), "\n", paste0(invtab, "\t"), "\n")
+    cat(sprintf("- Inversion frequency: %.2f%%\n",
+                sum(invtab[2], 2*invtab[3])/(sum(invtab)*2)*100))
+    }
     cat(sprintf("Mean certainty: %.4f\n", mean(certainty(object))))
 
   }

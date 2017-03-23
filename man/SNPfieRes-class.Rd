@@ -9,8 +9,6 @@
 \alias{certainty,SNPfieRes-method}
 \alias{classification}
 \alias{classification,SNPfieRes-method}
-\alias{plot}
-\alias{plot,SNPfieRes,ANY-method}
 \alias{scores}
 \alias{scores,SNPfieRes-method}
 \title{SNPfieRes instances}
@@ -20,16 +18,8 @@
 \S4method{certainty}{SNPfieRes}(object)
 
 \S4method{scores}{SNPfieRes}(object)
-
-\S4method{plot}{SNPfieRes,ANY}(x, y, ...)
 }
 \arguments{
-\item{object}{\code{SNPfieRes}}
-
-\item{object}{\code{SNPfieRes}}
-
-\item{object}{\code{SNPfieRes}}
-
 \item{object}{\code{SNPfieRes}}
 }
 \description{
@@ -42,8 +32,6 @@ Container with the results of the classification pipeline
 \item \code{certainty}: Get classification certainty
 
 \item \code{scores}: Get samples similarity scores
-
-\item \code{plot}: Plot samples similarity scores
 }}
 \section{Slots}{
 
