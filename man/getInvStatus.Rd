@@ -4,14 +4,10 @@
 \alias{getInvStatus}
 \title{Get the inversion status of a sample}
 \usage{
-getInvStatus(scores, ldamodel)
+getInvStatus(scores)
 }
 \arguments{
-\item{scores}{Matrix of similarity scores (from classifSNPspar)}
-
-\item{ldamodel}{LDAmodel used to classify individuals}
-
-\item{uncertainy.thres}{Numeric with the uncertainty threshold. If the maximum certainty of belonging
+\item{scores}{Matrix of similarity scores (from classifSNPspar)
 to a group is smaller than this parameter, the individual is classified as NA.}
 }
 \value{

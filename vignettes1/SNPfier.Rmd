@@ -20,7 +20,7 @@ vignette: >
 
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE)
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 # Introduction
@@ -94,11 +94,11 @@ LDA models have been trained in CEU samples and are used to infer the inversion 
 
 
 ```{r, LDA models}
-library(MASS)
-data("ldamodels")
-names(ldamodels)
-mod <- ldamodels$ROIno.8.3
-mod
+# library(MASS)
+# data("ldamodels")
+# names(ldamodels)
+# mod <- ldamodels$ROIno.8.3
+# mod
 ```
 
 # Running snpfier 
@@ -129,9 +129,9 @@ EUR$genotypes <- EUR$genotypes[EURsamps, ]
 
 Now we are ready to classify the samples. The function `classifierPipeline` needs five objects: the genotypes and their annotation (`SNPlist`) and the four objects that characterize the inversion. `Refs` is the list of matrices with the frequency of each genotypes in each inversion population. `SNPsR2` is the numeric vector with the SNPs R^2^. `hetRefs` is the vector with the heterozygous genotypes of the SNPs and `ldamodel` is the LDA model used to classify the individuals. We will get the inversion status of the inversion ROIno.8.3:  
 
-```{r, classify EUR}
+```{r, classify EUR, cache=TRUE}
 res <- classifierPipeline(SNPlist = EUR, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = hetRefs$ROIno.8.3, 
-                          Refs = Refs$ROIno.8.3, ldamodel = ldamodels$ROIno.8.3)
+                          Refs = Refs$ROIno.8.3)
 res
 ```
 
@@ -149,13 +149,13 @@ head(scores(res))
 To have a quick overview of the classification, we can plot the simmilarity scores with the samples classification. We can easily do so by using the `plot` function to the object:
 
 ```{r, plot 1}
-plot(res)
+# plot(res)
 ```
 
 This function relies on the `plot` from base package. Therefore, we can modify the plot using the same arguments of the base function. Now, we will change the symbol plot depending on the certainty of the classification. Samples with a high certainty will have a full point and samples with low certainty an empty point. We will also add a title:
 
 ```{r, plot 2}
-plot(res, pch = ifelse(certainty(res) > 0.99999, 16, 1), main = "Certain classification")
+# plot(res, pch = ifelse(certainty(res) > 0.99999, 16, 1), main = "Certain classification")
 ```
 
 # Advanced features
@@ -164,10 +164,10 @@ There are two additional parameters of `classifierPipeline` than can reduce its 
 
 In the next lines, we will show what happens when the haplotype references do not agree with the haplotypes present in our samples. As mentioned before, the references included in the package have been created from European samples and might not be right for other superpopulations. We will run the same analysis but including the African samples. To speed up the process, we will select only those SNPs with a R^2^ higher than 0.4 and we will use 4 cores:
 
-```{r, classify all}
+```{r, classify all, cache=TRUE}
 resAll <- classifierPipeline(SNPlist = snpsVCF, SNPsR2 = SNPsR2$ROIno.8.3, 
                              hetRefs = hetRefs$ROIno.8.3, Refs = Refs$ROIno.8.3, 
-                             ldamodel = ldamodels$ROIno.8.3, 
+                             # ldamodel = ldamodels$ROIno.8.3, 
                              R2 = 0.4, mc.cores = 4)
 resAll
 ```
@@ -175,13 +175,13 @@ resAll
 At first sight, the new results are not very different from the previous ones. The mean certainty has only slightly fallen (from 0.998 to 0.982). The main difference is that the inversion frequency has drop 10 points (from 42% to 33%). However, if we can see the problems if we plot the results:
 
 ```{r, plot all}
-plot(resAll)
+# plot(resAll)
 ```
 
 Now, there is a big cloud of points in the center of the plot. We can change the symbol to identify the ancestry of the samples:
 
 ```{r, plot all 2}
-plot(resAll, pch = ifelse(rownames(snpsVCF$genotypes) %in% EURsamps, 16, 17), main = "Ancestry")
+# plot(resAll, pch = ifelse(rownames(snpsVCF$genotypes) %in% EURsamps, 16, 17), main = "Ancestry")
 ```
 
 In this plot, European samples are represented by a circle and African by a triangle. The points in the center of the plot are from African samples that are not properly classified. 

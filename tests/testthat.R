@@ -1,4 +1,4 @@
 library(testthat)
-library(SNPfier)
+library(snpfier)
 
-test_check("SNPfier")
+test_check("snpfier")

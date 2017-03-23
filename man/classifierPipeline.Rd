@@ -4,8 +4,8 @@
 \alias{classifierPipeline}
 \title{Classify inversions using identity}
 \usage{
-classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, ldamodel, R2 = 0,
-  uncertainy.thres = 0.99, mc.cores = 1, verbose = FALSE)
+classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3, mc.cores = 1,
+  verbose = FALSE)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data. It should contain genotypes (a SNPmatrix) and map (a data.frame
@@ -17,12 +17,7 @@ with the annotation)}
 
 \item{Refs}{List with the allele frequencies in the references}
 
-\item{ldamodel}{LDAmodel used to classify individuals}
-
 \item{R2}{Vector with the R2 between the SNPs and the inversion status}
-
-\item{uncertainy.thres}{Numeric with the uncertainty threshold. If the maximum certainty of belonging
-to a group is smaller than this parameter, the individual is classified as NA.}
 
 \item{mc.cores}{Numeric with the number of cores used in the computation}
 
