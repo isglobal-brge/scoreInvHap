@@ -28,7 +28,7 @@ classifSNPspar <- function(genos, R2, refs, mc.cores){
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))
     R2 <- R2[common]
-    genos <- genos[, common]
+    genos <- genos[, common, drop = FALSE]
     refs <- refs[common]
     numrefs <- nrow(refs[[1]])
 
