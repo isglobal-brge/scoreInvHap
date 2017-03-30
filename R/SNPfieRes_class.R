@@ -14,9 +14,10 @@ setClass (
   Class = "SNPfieRes",
   representation(
     classification = "factor",
-    certainty = "matrix",
+    probs = "matrix",
     scores = "matrix",
-    numSNPs = "numeric"
+    numSNPs = "numeric",
+    certainty = "numeric"
   )
 )
 
