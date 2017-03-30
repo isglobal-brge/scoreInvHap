@@ -4,8 +4,8 @@
 \alias{classifierPipeline}
 \title{Classify inversions using identity}
 \usage{
-classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3, mc.cores = 1,
-  verbose = FALSE)
+classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3, alfreq, genofreq,
+  mc.cores = 1, verbose = FALSE)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data. It should contain genotypes (a SNPmatrix) and map (a data.frame

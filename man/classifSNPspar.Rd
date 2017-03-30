@@ -4,7 +4,7 @@
 \alias{classifSNPspar}
 \title{Get similarity scores}
 \usage{
-classifSNPspar(genos, R2, refs, mc.cores)
+classifSNPspar(genos, R2, refs, alfreq, genofreq, mc.cores)
 }
 \arguments{
 \item{genos}{Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}}
