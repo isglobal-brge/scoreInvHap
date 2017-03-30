@@ -39,7 +39,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   SNPsR2 <- SNPsR2[SNPsR2 >= R2]
 
   ## Filter objects to only those included in the references
-  commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(refs), rownames(map), names(alfreq)))
+  commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(map), names(alfreq)))
 
   if (!length(commonSNPs)){
     stop("There are no common SNPs between the SNP object and the reference.")
