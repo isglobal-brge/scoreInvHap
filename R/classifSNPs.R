@@ -56,14 +56,13 @@ classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
 
 computeScore <- function(geno, refs, R2, alfreq, genofreq){
-
   goodgenos <- geno != "NN"
 
   numSNPs <- sum(goodgenos)
+  haplos <- rownames(refs[[1]])
+  numhaplos <- length(haplos)
 
   if(numSNPs == 0){
-    haplos <- rownames(refs[[1]])
-    numhaplos <- length(haplos)
     score <- postprob <- rep(0, numhaplos)
     names(score) <- names(postprob) <- haplos
     return(list(score = score, numSNPs = numSNPs, prob = postprob))
@@ -73,18 +72,26 @@ computeScore <- function(geno, refs, R2, alfreq, genofreq){
   refs <- refs[goodgenos]
   R2 <- R2[goodgenos]
   mat <- t(sapply(names(geno), function(snp) {
-    refs[[snp]][, geno[snp]]*R2[snp]
+    tryCatch(refs[[snp]][, geno[snp]]*R2[snp], error = function(e) {
+      res <- rep(0, numhaplos)
+      names(res) <- haplos
+      res
+      })
   }))
 
   score <- colSums(mat)/sum(R2)
 
   mat <- log10(t(sapply(names(geno), function(snp) {
-    refs[[snp]][, geno[snp]]
-  })))
+    tryCatch(refs[[snp]][, geno[snp]], error = function(e) {
+      res <- rep(0, numhaplos)
+      names(res) <- haplos
+      res
+    })
+    })))
   problog <- colSums(mat)
 
   haplofreqlog <- sum(log10(sapply(names(geno), function(snp) {
-    alfreq[[snp]][geno[snp]]
+    tryCatch(alfreq[[snp]][geno[snp]], error = function(e) 0)
   })))
 
   postprob <- 10^(problog-haplofreqlog)*genofreq
