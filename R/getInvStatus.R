@@ -7,7 +7,6 @@
 #' to a group is smaller than this parameter, the individual is classified as NA.
 #' @return Factor with the inversion classification of the samples
 getInvStatus <- function(scores) {
-  scores <- t(scores)
   class <- factor(colnames(scores)[max.col(scores)], levels = colnames(scores))
   names(class) <- rownames(scores)
   posterior <- scores/rowSums(scores)

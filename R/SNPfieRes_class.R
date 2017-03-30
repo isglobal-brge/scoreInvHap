@@ -14,8 +14,9 @@ setClass (
   Class = "SNPfieRes",
   representation(
     classification = "factor",
-    certainty = "numeric",
-    scores = "matrix"
+    certainty = "matrix",
+    scores = "matrix",
+    numSNPs = "numeric"
   )
 )
 
@@ -102,7 +103,7 @@ setMethod(
     cat(sprintf("- Inversion frequency: %.2f%%\n",
                 sum(invtab[2], 2*invtab[3])/(sum(invtab)*2)*100))
     }
-    cat(sprintf("Mean certainty: %.4f\n", mean(certainty(object))))
+    cat(sprintf("Mean certainty: %.4f\n", mean(certainty(object), na.rm = TRUE)))
 
   }
 )

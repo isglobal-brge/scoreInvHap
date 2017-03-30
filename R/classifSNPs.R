@@ -23,36 +23,61 @@
 #' @return Matrix with the standard and inverted scores for each individual. Samples are in columns and
 #' scores in rows
 #'
-classifSNPspar <- function(genos, R2, refs, mc.cores){
+classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
     # Select SNPs present in R2, references and genotypes
-    common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))
+    common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos), names(alfreq)))
     R2 <- R2[common]
     genos <- genos[, common, drop = FALSE]
     refs <- refs[common]
+    alfreq <- alfreq[common]
     numrefs <- nrow(refs[[1]])
 
-    if (length(common) == 0){
-      res <- matrix(0, nrow = 2, ncol = nrow(genos))
-      rownames(res) <- c("inv", "std")
-      colnames(res) <- rownames(genos)
-      return(res)
-    }
+    res <-  parallel::mclapply(rownames(genos), function(ind) {
+      computeScore(genos[ind, ], refs = refs, R2 = R2, alfreq = alfreq, genofreq = genofreq)
+    }, mc.cores = mc.cores)
+    names(res) <- rownames(genos)
 
-    res <-  parallel::mclapply(rownames(genos),
-                     function(ind) {
-                       rowSums(sapply(colnames(genos), function(geno){
-                         gen <- genos[ind, geno]
-                         a <- rep(0, numrefs)
-                         if (gen %in% colnames(refs[[geno]])){
-                           a <- refs[[geno]][, gen]*R2[geno]
-                         }
-                         a
-                       }))
-                     }, mc.cores = mc.cores)
-    res <- matrix(unlist(res), nrow = numrefs)
-    rownames(res) <- rownames(refs[[1]])
-    colnames(res) <- rownames(genos)
-    res <- res/sum(R2[colnames(genos)])
-    res
+    scores <- t(vapply(res, `[[`, numeric(numrefs), "score"))
+    probs <- t(vapply(res, `[[`, numeric(numrefs), "prob"))
+    snps <- vapply(res, `[[`, numeric(1), "numSNPs")
+
+    list(scores = scores, probs = probs, numSNPs = snps)
+
+    # res <- matrix(unlist(res), nrow = numrefs)
+    # rownames(res) <- rownames(refs[[1]])
+    # colnames(res) <- rownames(genos)
+    # sum_R2 <- matrix(apply(genos != "NN", 1, function(x) sum(R2[x])),
+    #                   ncol = nrow(genos), nrow = nrow(res), byrow = T)
+    # numSNPs <- rowSums(genos != "NN")
+    # scores <- res/sum_R2
+    # list(scores = scores, numSNPs = numSNPs)
   }
+
+
+computeScore <- function(geno, refs, R2, alfreq, genofreq){
+  goodgenos <- geno != "NN"
+  geno <- geno[goodgenos]
+  refs <- refs[goodgenos]
+  R2 <- R2[goodgenos]
+  numSNPs <- sum(goodgenos)
+
+  mat <- t(sapply(names(geno), function(snp) {
+    refs[[snp]][, geno[snp]]*R2[snp]
+  }))
+  score <- colSums(mat)/sum(R2)
+
+  mat <- log10(t(sapply(names(geno), function(snp) {
+    refs[[snp]][, geno[snp]]
+  })))
+  problog <- colSums(mat)
+
+  haplofreqlog <- sum(log10(sapply(names(geno), function(snp) {
+    alfreq[[snp]][geno[snp]]
+  })))
+
+  postprob <- 10^(problog-haplofreqlog)*genofreq
+
+
+  list(score = score, numSNPs = numSNPs, prob = postprob)
+}

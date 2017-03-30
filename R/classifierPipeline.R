@@ -15,6 +15,7 @@
 #' \item{scores: Matrix with the simmilarity scores of the individuals}
 #' }
 classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
+                               alfreq, genofreq,
                                mc.cores = 1, verbose = FALSE){
   if (!all(c("map", "genotypes") %in% names(SNPlist))){
     stop("SNPlist must contain map and genotypes elements")
@@ -38,7 +39,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   SNPsR2 <- SNPsR2[SNPsR2 >= R2]
 
   ## Filter objects to only those included in the references
-  commonSNPs <- Reduce(intersect, list(names(hetRefs), rownames(map), names(SNPsR2)))
+  commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(refs), rownames(map), names(alfreq)))
 
   if (!length(commonSNPs)){
     stop("There are no common SNPs between the SNP object and the reference.")
@@ -61,9 +62,11 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   if (verbose){
     message("Computing scores")
   }
-  classifScore <- classifSNPspar(genos = genos, R2 = SNPsR2, refs = Refs, mc.cores = mc.cores)
-  inv <- getInvStatus(scores = classifScore)
-  res <- new("SNPfieRes", classification = inv$class, certainty = inv$certainty,
-             scores = t(classifScore))
+  classifScore <- classifSNPspar(genos = genos, R2 = SNPsR2, refs = Refs,
+                                alfreq = alfreq, genofreq = genofreq,
+                                mc.cores = mc.cores)
+  inv <- getInvStatus(scores = classifScore$scores)
+  res <- new("SNPfieRes", classification = inv$class, certainty = classifScore$probs,
+             scores = classifScore$scores, numSNPs = classifScore$numSNPs)
   res
 }
