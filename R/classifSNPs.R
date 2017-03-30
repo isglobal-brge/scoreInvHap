@@ -56,15 +56,26 @@ classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
 
 computeScore <- function(geno, refs, R2, alfreq, genofreq){
+
   goodgenos <- geno != "NN"
+
+  numSNPs <- sum(goodgenos)
+
+  if(numSNPs == 0){
+    haplos <- rownames(refs[[1]])
+    numhaplos <- length(haplos)
+    score <- postprob <- rep(0, numhaplos)
+    names(score) <- names(postprob) <- haplos
+    return(list(score = score, numSNPs = numSNPs, prob = postprob))
+  }
+
   geno <- geno[goodgenos]
   refs <- refs[goodgenos]
   R2 <- R2[goodgenos]
-  numSNPs <- sum(goodgenos)
-
   mat <- t(sapply(names(geno), function(snp) {
     refs[[snp]][, geno[snp]]*R2[snp]
   }))
+
   score <- colSums(mat)/sum(R2)
 
   mat <- log10(t(sapply(names(geno), function(snp) {
