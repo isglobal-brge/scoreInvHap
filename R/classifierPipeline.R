@@ -1,19 +1,17 @@
 #' Classify inversions using identity
 #'
 #' @export
-#' @param SNPlist List with SNPs data. It should contain genotypes (a SNPmatrix) and map (a data.frame
+#' @param SNPlist List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 #' with the annotation)
 #' @param SNPsR2 Vector with the R2 of the SNPs of the region
 #' @param hetRefs Vector with the heterozygote form of the SNP in the inversion
 #' @param Refs List with the allele frequencies in the references
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
+#' @param alfreq List with the allele frequencies in the target population
+#' @param genofreq Vector with the frequency of each haplotype
 #' @param mc.cores Numeric with the number of cores used in the computation
 #' @param verbose Should message be shown?
-#' @return A list with the following elements:
-#' \itemize{
-#' \item{class: Factor with the classification of the individuals}
-#' \item{scores: Matrix with the simmilarity scores of the individuals}
-#' }
+#' @return A \code{SNPfieRes} object
 classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
                                alfreq, genofreq,
                                mc.cores = 1, verbose = FALSE){
@@ -62,7 +60,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   if (verbose){
     message("Computing scores")
   }
-  classifScore <- classifSNPspar(genos = genos, R2 = SNPsR2, refs = Refs,
+  classifScore <- classifSNPs(genos = genos, R2 = SNPsR2, refs = Refs,
                                 alfreq = alfreq, genofreq = genofreq,
                                 mc.cores = mc.cores)
   inv <- getInvStatus(scores = classifScore$probs)

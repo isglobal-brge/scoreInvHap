@@ -1,29 +1,38 @@
-#' Get similarity scores
+#' Get similarity scores and probability
 #'
-#' This function computes the similarity scores between the sample SNPs and the inversion's reference.
+#' This function computes the similarity scores between the sample SNPs and the haplotype's
+#' reference. It also returns the probability of each sample to belong to the
+#' different haplotypes.
 #'
-#' @details This function computes two similarity scores for each individual: the inverted and the
-#' standard score. The individuals' score are computed as a weighted mean of the similarity scores
-#' of each SNP.
+#' @details This function computes, for each individual, similarity scores for
+#' all the present haplotypes. For each SNP, we compute as many similarity scores
+#' as haplotypes present in the reference. We have defined the similarity score as
+#' the frequency of this genotype in the different haplotype population. To compute
+#' the global similarity score, we have computed a mean of the scores by SNP weighted
+#' by the R2 between the SNP and the haplotype classification.
 #'
-#' For each SNP, we compare the genotype of the invidual with the genotypes frequencies
-#' in the homozygous inverted and standard samples. If the frequency of the individual genotype is
-#' higher in the inverted samples, we add 1 to the inverted score and 0 to the standard score. If the
-#' frequency of the individual genotype is higher in the standard sample, we add 1 to the standard
-#' score and 0 to the inverted score. The individuals' scores are computed using the mean of the
-#' SNPs scores weigthed by the R2 between the SNP and the inversion status.
+#' In addition, we have computed the probability of a sample to belong to each of
+#' the haplotypes. To do so, we compute the conditional probability of a sample genotype
+#' to belong to each haplotype and we apply Bayes' theorem.
 #'
 #' @export
 #'
 #' @param genos Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
 #' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
-#' homozygous inverted, homozygous standard and heterozygous samples.
+#' different haplotypes.
+#' @param alfreq List with the allele frequencies in the target population.
+#' @param genofreq Vector with the frequency of each haplotype
 #' @param mc.cores Numeric with the number of cores used in the computation
-#' @return Matrix with the standard and inverted scores for each individual. Samples are in columns and
-#' scores in rows
+#' @return List with the results:
+#' \itemize{
+#' \item{scores: Matrix with the simmilarity scores of the individuals}
+#' \item{probs: Matrix with the probability of each individual to belong to the
+#' different haplotypes}
+#' \item{numSNPs: Vector with the number of SNPs used in each computation}
+#' }
 #'
-classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
+classifSNPs <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos), names(alfreq)))
@@ -33,6 +42,7 @@ classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
     alfreq <- alfreq[common]
     numrefs <- nrow(refs[[1]])
 
+    # Compute the scores and the probabilities
     res <-  parallel::mclapply(rownames(genos), function(ind) {
       computeScore(genos[ind, ], refs = refs, R2 = R2, alfreq = alfreq, genofreq = genofreq)
     }, mc.cores = mc.cores)
@@ -44,14 +54,6 @@ classifSNPspar <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
     list(scores = scores, probs = probs, numSNPs = snps)
 
-    # res <- matrix(unlist(res), nrow = numrefs)
-    # rownames(res) <- rownames(refs[[1]])
-    # colnames(res) <- rownames(genos)
-    # sum_R2 <- matrix(apply(genos != "NN", 1, function(x) sum(R2[x])),
-    #                   ncol = nrow(genos), nrow = nrow(res), byrow = T)
-    # numSNPs <- rowSums(genos != "NN")
-    # scores <- res/sum_R2
-    # list(scores = scores, numSNPs = numSNPs)
   }
 
 

@@ -8,8 +8,10 @@
 #' @aliases SNPfieRes-class SNPfieRes-methods
 #'
 #' @slot classification Factor with the individuals classification
+#' @slot probs Probability of each individual to belong to the different haplotypes
+#' @slot scores Simmilarity scores for the different haplotypes.
+#' @slot numSNPs Numeric with SNPs used to compute the scores.
 #' @slot certainty Numeric with the certainty of the classification for each individual.
-#' @slot scores Simmilarity scores for the inverted and standard references.
 setClass (
   Class = "SNPfieRes",
   representation(
@@ -50,6 +52,36 @@ setMethod(
   signature = "SNPfieRes",
   definition = function(object) {
     return(object@certainty)
+  }
+)
+
+#' @export
+setGeneric("numSNPs", function(object){
+  standardGeneric("numSNPs")
+})
+
+#' @describeIn SNPfieRes Get number of SNPs used in computation
+#' @aliases SNPfieRes-methods numSNPs
+setMethod(
+  f = "numSNPs",
+  signature = "SNPfieRes",
+  definition = function(object) {
+    return(object@numSNPs)
+  }
+)
+
+#' @export
+setGeneric("probs", function(object){
+  standardGeneric("probs")
+})
+
+#' @describeIn SNPfieRes Get samples probabilities
+#' @aliases SNPfieRes-methods probs
+setMethod(
+  f = "probs",
+  signature = "SNPfieRes",
+  definition = function(object) {
+    return(object@probs)
   }
 )
 

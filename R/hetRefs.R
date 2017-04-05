@@ -4,7 +4,7 @@
 #' include all the SNPs that are present inside the inversion's region in 1000 Genomes Phase 3.
 #'
 #' @format List of character vectors with the heterozygous genotypes of the SNPs present included
-#' the region of 6 inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3, ROIno.16.13
-#' and ROIno.17.16). Each element is named with the SNPs names.
+#' the region of four inversions (ROIno.8.3, ROIno.17.16, HsInv0286 and HsInv0396).
+#' Each element is named with the SNPs names.
 #'
 "hetRefs"

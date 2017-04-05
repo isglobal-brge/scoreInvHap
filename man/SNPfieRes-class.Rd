@@ -9,6 +9,10 @@
 \alias{certainty,SNPfieRes-method}
 \alias{classification}
 \alias{classification,SNPfieRes-method}
+\alias{numSNPs}
+\alias{numSNPs,SNPfieRes-method}
+\alias{probs}
+\alias{probs,SNPfieRes-method}
 \alias{scores}
 \alias{scores,SNPfieRes-method}
 \title{SNPfieRes instances}
@@ -16,6 +20,10 @@
 \S4method{classification}{SNPfieRes}(object)
 
 \S4method{certainty}{SNPfieRes}(object)
+
+\S4method{numSNPs}{SNPfieRes}(object)
+
+\S4method{probs}{SNPfieRes}(object)
 
 \S4method{scores}{SNPfieRes}(object)
 }
@@ -31,6 +39,10 @@ Container with the results of the classification pipeline
 
 \item \code{certainty}: Get classification certainty
 
+\item \code{numSNPs}: Get number of SNPs used in computation
+
+\item \code{probs}: Get samples probabilities
+
 \item \code{scores}: Get samples similarity scores
 }}
 \section{Slots}{
@@ -38,8 +50,12 @@ Container with the results of the classification pipeline
 \describe{
 \item{\code{classification}}{Factor with the individuals classification}
 
-\item{\code{certainty}}{Numeric with the certainty of the classification for each individual.}
+\item{\code{probs}}{Probability of each individual to belong to the different haplotypes}
 
-\item{\code{scores}}{Simmilarity scores for the inverted and standard references.}
+\item{\code{scores}}{Simmilarity scores for the different haplotypes.}
+
+\item{\code{numSNPs}}{Numeric with SNPs used to compute the scores.}
+
+\item{\code{certainty}}{Numeric with the certainty of the classification for each individual.}
 }}
 

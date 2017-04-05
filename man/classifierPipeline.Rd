@@ -8,7 +8,7 @@ classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3, alfreq, genofreq,
   mc.cores = 1, verbose = FALSE)
 }
 \arguments{
-\item{SNPlist}{List with SNPs data. It should contain genotypes (a SNPmatrix) and map (a data.frame
+\item{SNPlist}{List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 with the annotation)}
 
 \item{SNPsR2}{Vector with the R2 of the SNPs of the region}
@@ -19,16 +19,16 @@ with the annotation)}
 
 \item{R2}{Vector with the R2 between the SNPs and the inversion status}
 
+\item{alfreq}{List with the allele frequencies in the target population}
+
+\item{genofreq}{Vector with the frequency of each haplotype}
+
 \item{mc.cores}{Numeric with the number of cores used in the computation}
 
 \item{verbose}{Should message be shown?}
 }
 \value{
-A list with the following elements:
-\itemize{
-\item{class: Factor with the classification of the individuals}
-\item{scores: Matrix with the simmilarity scores of the individuals}
-}
+A \code{SNPfieRes} object
 }
 \description{
 Classify inversions using identity

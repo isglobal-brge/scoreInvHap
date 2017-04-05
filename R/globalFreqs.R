@@ -1,10 +1,9 @@
 #' Frequency of each allele in European population
 #'
-#' Dataset with the heterozygote genotypes of all the SNPs used in any of the references. This dataset
-#' include all the SNPs that are present inside the inversion's region in 1000 Genomes Phase 3.
+#' Dataset with the genotype frequencies in the European population. These frequencies
+#' have been computed using the European samples of 1000 Genomes Phase 3 data.
 #'
-#' @format List of character vectors with the heterozygous genotypes of the SNPs present included
-#' the region of 6 inversions (ROIno.2.13, ROIno.3.2, ROIno.7.10, ROIno.8.3, ROIno.16.13
-#' and ROIno.17.16). Each element is named with the SNPs names.
+#' @format List of matrices for four inversions (ROIno.8.3, ROIno.17.16, HsInv0286 and
+#' HsInv0396). Each matrix has the frequency of each genotype in the European population.
 #'
 "globalFreqs"

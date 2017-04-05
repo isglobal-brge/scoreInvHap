@@ -7,14 +7,17 @@
 getInvStatus(scores)
 }
 \arguments{
-\item{scores}{Matrix of similarity scores (from classifSNPspar)
-to a group is smaller than this parameter, the individual is classified as NA.}
+\item{scores}{Matrix of probabilities (from \code{classifSNPs})}
 }
 \value{
-Factor with the inversion classification of the samples
+List with the results:
+\itemize{
+\item{class: Vector with the most probable classification}
+\item{certainty: Vector with the certainty of the most probable classification}
+}
 }
 \description{
-This function estimates the inversion status of the samples using the similarity scores and a LDA
-model.
+This function estimates the inversion status of the samples using the probabilities
+computed in \code{classifSNPs}
 }
 
