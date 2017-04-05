@@ -44,7 +44,7 @@ classifSNPs <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
     # Compute the scores and the probabilities
     res <-  parallel::mclapply(rownames(genos), function(ind) {
-      computeScore(genos[ind, , drop = FALSE], refs = refs, R2 = R2, alfreq = alfreq, genofreq = genofreq)
+      computeScore(genos[ind, ], refs = refs, R2 = R2, alfreq = alfreq, genofreq = genofreq)
     }, mc.cores = mc.cores)
     names(res) <- rownames(genos)
 
@@ -58,6 +58,11 @@ classifSNPs <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
 
 
 computeScore <- function(geno, refs, R2, alfreq, genofreq){
+
+  if (is.null(names(geno))){
+    names(geno) <- names(refs)
+  }
+
   goodgenos <- geno != "NN"
 
   numSNPs <- sum(goodgenos)
