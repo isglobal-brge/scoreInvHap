@@ -14,6 +14,7 @@ getInvStatus <- function(scores) {
   class <- factor(colnames(scores)[max.col(scores)], levels = colnames(scores))
   names(class) <- rownames(scores)
   posterior <- scores/rowSums(scores)
-  certainty <- apply(posterior, 1, max)
+  certainty <- apply(posterior, 1, max, na.rm = T)
+  certainty[certainty == -Inf] <- 0
   return(list(class = class, certainty = certainty))
 }
