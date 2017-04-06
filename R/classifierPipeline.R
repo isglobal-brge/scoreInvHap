@@ -63,7 +63,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   classifScore <- classifSNPs(genos = genos, R2 = SNPsR2, refs = Refs,
                                 alfreq = alfreq, genofreq = genofreq,
                                 mc.cores = mc.cores)
-  inv <- getInvStatus(scores = classifScore$probs)
+  inv <- getInvStatus(scores = classifScore$scores)
   res <- new("SNPfieRes", classification = inv$class, probs = classifScore$probs,
              scores = classifScore$scores, numSNPs = classifScore$numSNPs,
              certainty = inv$certainty)
