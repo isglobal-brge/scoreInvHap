@@ -12,9 +12,42 @@
 #' @param mc.cores Numeric with the number of cores used in the computation
 #' @param verbose Should message be shown?
 #' @return A \code{SNPfieRes} object
-classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
-                               alfreq, genofreq,
+classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
+                               alfreq, genofreq, imputed = FALSE,
                                mc.cores = 1, verbose = FALSE){
+  if (imputed){
+
+    ## Select SNPs with a R2 equal or higher than the threshold
+    SNPsR2 <- SNPsR2[SNPsR2 >= R2]
+
+    ## Filter objects to only those included in the references
+    commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(SNPlist)))
+
+    if (!length(commonSNPs)){
+      stop("There are no common SNPs between the SNP object and the reference.")
+    }
+
+    SNPlist <- SNPlist[commonSNPs, ]
+
+    # Create alleleTable
+    map <- prepareMap(SNPlist)
+    alleletable <- getAlleleTable(map)
+    alleletable <- correctAlleleTable(alleletable = alleletable, hetRefs = hetRefs, map = map)
+
+    # Order alleles in Refs as in our VCF
+    refs <- adaptRefs(Refs = Refs, alleletable = alleletable)
+
+    genos <- geno(SNPlist)$GP
+
+    ## Compute score
+    classifScore <- classifSNPsImpute(genos, R2 = SNPsR2, refs = refs)
+    inv <- getInvStatus(scores = classifScore$scores)
+    res <- new("SNPfieRes", classification = inv$class,
+               scores = classifScore$scores, numSNPs = classifScore$numSNPs,
+               certainty = inv$certainty)
+    return(res)
+  } else {
+
   if (!all(c("map", "genotypes") %in% names(SNPlist))){
     stop("SNPlist must contain map and genotypes elements")
   }
@@ -67,5 +100,36 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0.3,
   res <- new("SNPfieRes", classification = inv$class, probs = classifScore$probs,
              scores = classifScore$scores, numSNPs = classifScore$numSNPs,
              certainty = inv$certainty)
-  res
+  return(res)
+  }
+}
+
+
+adaptRefs <- function(Refs, alleletable){
+  rb <- lapply(rownames(alleletable), function(snp) {
+    als <- unlist(alleletable[snp, 1:3])
+    rb <- Refs[[snp]]
+    if (ncol(rb) == 1){
+      rb <- cbind(rb, 0, 0)
+      colnames(rb)[2:3] <- als[!als %in% colnames(rb)]
+    }
+    if (ncol(rb) == 2){
+      rb <- cbind(rb, 0)
+      colnames(rb)[3] <- als[!als %in% colnames(rb)]
+    }
+    rb[, als]
+  })
+  names(rb) <- rownames(alleletable)
+  rb
+}
+
+prepareMap <- function(vcf){
+  map <- mcols(rowRanges(vcf))
+  rownames(map) <- rownames(vcf)
+  cnmap <- colnames(map)
+  cnmap[cnmap == "REF"] <- "allele.1"
+  cnmap[cnmap == "ALT"] <- "allele.2"
+  colnames(map) <- cnmap
+  map$allele.2 <- unlist(map$allele.2)
+  map
 }

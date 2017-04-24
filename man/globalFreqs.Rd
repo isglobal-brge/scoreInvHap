@@ -14,4 +14,3 @@ Dataset with the genotype frequencies in the European population. These frequenc
 have been computed using the European samples of 1000 Genomes Phase 3 data.
 }
 \keyword{datasets}
-

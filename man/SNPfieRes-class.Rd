@@ -5,16 +5,21 @@
 \alias{SNPfieRes}
 \alias{SNPfieRes-class}
 \alias{SNPfieRes-methods}
-\alias{certainty}
-\alias{certainty,SNPfieRes-method}
-\alias{classification}
 \alias{classification,SNPfieRes-method}
-\alias{numSNPs}
+\alias{SNPfieRes-methods}
+\alias{classification}
+\alias{certainty,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{certainty}
 \alias{numSNPs,SNPfieRes-method}
-\alias{probs}
+\alias{SNPfieRes-methods}
+\alias{numSNPs}
 \alias{probs,SNPfieRes-method}
-\alias{scores}
+\alias{SNPfieRes-methods}
+\alias{probs}
 \alias{scores,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{scores}
 \title{SNPfieRes instances}
 \usage{
 \S4method{classification}{SNPfieRes}(object)
@@ -45,6 +50,7 @@ Container with the results of the classification pipeline
 
 \item \code{scores}: Get samples similarity scores
 }}
+
 \section{Slots}{
 
 \describe{

@@ -16,4 +16,3 @@ Data.frame with genotypes map
 Get a data.frame that maps the numeric genotype of a SNPmatrix (0, 1, 2) into the real genotype.
 Heterozygous genotypes are ordered alphabetically.
 }
-

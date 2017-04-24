@@ -16,4 +16,3 @@ of 1000 Genomes Phase 3 data. Real inversion status have been estimated using
 invClust.
 }
 \keyword{datasets}
-

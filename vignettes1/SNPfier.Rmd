@@ -131,7 +131,8 @@ Now we are ready to classify the samples. The function `classifierPipeline` need
 
 ```{r, classify EUR, cache=TRUE}
 res <- classifierPipeline(SNPlist = EUR, SNPsR2 = SNPsR2$ROIno.8.3, hetRefs = hetRefs$ROIno.8.3, 
-                          Refs = Refs$ROIno.8.3)
+                          Refs = Refs$ROIno.8.3, alfreq = globalFreqs$ROIno.8.3, 
+                          genofreq = genoFreqs$ROIno.8.3)
 res
 ```
 
@@ -167,8 +168,9 @@ In the next lines, we will show what happens when the haplotype references do no
 ```{r, classify all, cache=TRUE}
 resAll <- classifierPipeline(SNPlist = snpsVCF, SNPsR2 = SNPsR2$ROIno.8.3, 
                              hetRefs = hetRefs$ROIno.8.3, Refs = Refs$ROIno.8.3, 
-                             # ldamodel = ldamodels$ROIno.8.3, 
-                             R2 = 0.4, mc.cores = 4)
+                             alfreq = globalFreqs$ROIno.8.3, 
+                          genofreq = genoFreqs$ROIno.8.3,
+                             R2 = 0, mc.cores = 10)
 resAll
 ```
 

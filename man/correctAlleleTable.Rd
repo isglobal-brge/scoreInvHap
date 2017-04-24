@@ -21,4 +21,3 @@ This function tries to solve discrepancies between the reference and sample geno
 these discrepancies is that samples and references have used different strands to codify the SNP. This
 function get the complement genotypes for the discordant SNPs and checks if discordancies are solved.
 }
-

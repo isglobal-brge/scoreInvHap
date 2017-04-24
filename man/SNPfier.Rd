@@ -13,4 +13,3 @@ reference, allele frequencies in the reference population and inversion frequenc
 The package include this data for two well known inversions (8p23 and
 17q21.31) and for two additional validated regions.
 }
-

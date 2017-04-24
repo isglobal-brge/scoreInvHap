@@ -17,4 +17,3 @@ Character matrix with the samples genotypes
 \description{
 Get a matrix with the sample genotypes from all SNP.
 }
-

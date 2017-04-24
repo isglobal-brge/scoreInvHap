@@ -2,6 +2,7 @@
 
 export(certainty)
 export(classifSNPs)
+export(classifSNPsImpute)
 export(classification)
 export(classifierPipeline)
 export(numSNPs)

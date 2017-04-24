@@ -20,4 +20,3 @@ List with the results:
 This function estimates the inversion status of the samples using the probabilities
 computed in \code{classifSNPs}
 }
-

@@ -15,4 +15,3 @@ Dataset with the heterozygote genotypes of all the SNPs used in any of the refer
 include all the SNPs that are present inside the inversion's region in 1000 Genomes Phase 3.
 }
 \keyword{datasets}
-
