@@ -14,9 +14,6 @@
 \alias{numSNPs,SNPfieRes-method}
 \alias{SNPfieRes-methods}
 \alias{numSNPs}
-\alias{probs,SNPfieRes-method}
-\alias{SNPfieRes-methods}
-\alias{probs}
 \alias{scores,SNPfieRes-method}
 \alias{SNPfieRes-methods}
 \alias{scores}
@@ -28,12 +25,13 @@
 
 \S4method{numSNPs}{SNPfieRes}(object)
 
-\S4method{probs}{SNPfieRes}(object)
-
 \S4method{scores}{SNPfieRes}(object)
 }
 \arguments{
 \item{object}{\code{SNPfieRes}}
+}
+\value{
+A SNPfieRes instance
 }
 \description{
 Container with the results of the classification pipeline
@@ -46,8 +44,6 @@ Container with the results of the classification pipeline
 
 \item \code{numSNPs}: Get number of SNPs used in computation
 
-\item \code{probs}: Get samples probabilities
-
 \item \code{scores}: Get samples similarity scores
 }}
 
@@ -55,8 +51,6 @@ Container with the results of the classification pipeline
 
 \describe{
 \item{\code{classification}}{Factor with the individuals classification}
-
-\item{\code{probs}}{Probability of each individual to belong to the different haplotypes}
 
 \item{\code{scores}}{Simmilarity scores for the different haplotypes.}
 

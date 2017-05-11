@@ -4,16 +4,15 @@
 #' reference. It also returns the probability of each sample to belong to the
 #' different haplotypes.
 #'
-#' @details This function computes, for each individual, similarity scores for
+#' @details classifSNPs computes, for each individual, similarity scores for
 #' all the present haplotypes. For each SNP, we compute as many similarity scores
 #' as haplotypes present in the reference. We have defined the similarity score as
 #' the frequency of this genotype in the different haplotype population. To compute
 #' the global similarity score, we have computed a mean of the scores by SNP weighted
 #' by the R2 between the SNP and the haplotype classification.
 #'
-#' In addition, we have computed the probability of a sample to belong to each of
-#' the haplotypes. To do so, we compute the conditional probability of a sample genotype
-#' to belong to each haplotype and we apply Bayes' theorem.
+#' classifSNPsImpute is a version of classifSNPs that works with posterior probabilities
+#' of imputed genotypes.
 #'
 #' @export
 #'
@@ -21,43 +20,36 @@
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
 #' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 #' different haplotypes.
-#' @param alfreq List with the allele frequencies in the target population.
-#' @param genofreq Vector with the frequency of each haplotype
 #' @param mc.cores Numeric with the number of cores used in the computation
 #' @return List with the results:
 #' \itemize{
 #' \item{scores: Matrix with the simmilarity scores of the individuals}
-#' \item{probs: Matrix with the probability of each individual to belong to the
-#' different haplotypes}
 #' \item{numSNPs: Vector with the number of SNPs used in each computation}
 #' }
-#'
-classifSNPs <- function(genos, R2, refs, alfreq, genofreq, mc.cores){
+classifSNPs <- function(genos, R2, refs, mc.cores){
 
     # Select SNPs present in R2, references and genotypes
-    common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos), names(alfreq)))
+    common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))
     R2 <- R2[common]
     genos <- genos[, common, drop = FALSE]
     refs <- refs[common]
-    alfreq <- alfreq[common]
     numrefs <- nrow(refs[[1]])
 
     # Compute the scores and the probabilities
     res <-  parallel::mclapply(rownames(genos), function(ind) {
-      computeScore(genos[ind, ], refs = refs, R2 = R2, alfreq = alfreq, genofreq = genofreq)
+      computeScore(genos[ind, ], refs = refs, R2 = R2)
     }, mc.cores = mc.cores)
     names(res) <- rownames(genos)
 
     scores <- t(vapply(res, `[[`, numeric(numrefs), "score"))
-    probs <- t(vapply(res, `[[`, numeric(numrefs), "prob"))
     snps <- vapply(res, `[[`, numeric(1), "numSNPs")
 
-    list(scores = scores, probs = probs, numSNPs = snps)
+    list(scores = scores, numSNPs = snps)
 
   }
 
 
-computeScore <- function(geno, refs, R2, alfreq, genofreq){
+computeScore <- function(geno, refs, R2){
 
   if (is.null(names(geno))){
     names(geno) <- names(refs)
@@ -88,21 +80,6 @@ computeScore <- function(geno, refs, R2, alfreq, genofreq){
 
   score <- colSums(mat)/sum(R2)
 
-  mat <- log10(t(vapply(names(geno), function(snp) {
-    tryCatch(refs[[snp]][, geno[snp]], error = function(e) {
-      res <- rep(0, numhaplos)
-      names(res) <- haplos
-      res
-    })
-    }, numeric(numhaplos))))
-  problog <- colSums(mat)
 
-  haplofreqlog <- sum(log10(sapply(names(geno), function(snp) {
-    tryCatch(alfreq[[snp]][geno[snp]], error = function(e) 0)
-  })))
-
-  postprob <- 10^(problog-haplofreqlog)*genofreq
-
-
-  list(score = score, numSNPs = numSNPs, prob = postprob)
+  list(score = score, numSNPs = numSNPs)
 }

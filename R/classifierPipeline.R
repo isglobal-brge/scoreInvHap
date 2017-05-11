@@ -7,46 +7,64 @@
 #' @param hetRefs Vector with the heterozygote form of the SNP in the inversion
 #' @param Refs List with the allele frequencies in the references
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
-#' @param alfreq List with the allele frequencies in the target population
-#' @param genofreq Vector with the frequency of each haplotype
+#' @param imputed Logical. If TRUE, scores are computed using posterior probabilities.
+#' If FALSE, scores are computed using best guess. Only applied when SNPlist is a VCF.
 #' @param mc.cores Numeric with the number of cores used in the computation
 #' @param verbose Should message be shown?
 #' @return A \code{SNPfieRes} object
+#' @examples
+#' if(require(VariantAnnotation)){
+#'   vcf <- readVcf(system.file("extdata", "example.vcf", package = "snpfier"), "hg19")
+#'   res <- classifierPipeline(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+#'   Refs$HsInv0286, mc.cores = 1)
+#' }
 classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
-                               alfreq, genofreq, imputed = FALSE,
+                               imputed = FALSE,
                                mc.cores = 1, verbose = FALSE){
-  if (imputed){
+  if (is(SNPlist, "VCF")){
+    if (imputed){
 
-    ## Select SNPs with a R2 equal or higher than the threshold
-    SNPsR2 <- SNPsR2[SNPsR2 >= R2]
+      ## Select SNPs with a R2 equal or higher than the threshold
+      SNPsR2 <- SNPsR2[SNPsR2 >= R2]
 
-    ## Filter objects to only those included in the references
-    commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(SNPlist)))
+      ## Filter objects to only those included in the references
+      commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(SNPlist)))
 
-    if (!length(commonSNPs)){
-      stop("There are no common SNPs between the SNP object and the reference.")
+      if (!length(commonSNPs)){
+        stop("There are no common SNPs between the SNP object and the reference.")
+      }
+
+      SNPlist <- SNPlist[commonSNPs, ]
+
+      # Create alleleTable
+      map <- prepareMap(SNPlist)
+      alleletable <- getAlleleTable(map)
+      alleletable <- correctAlleleTable(alleletable = alleletable, hetRefs = hetRefs, map = map)
+
+      # Order alleles in Refs as in our VCF
+      refs <- adaptRefs(Refs = Refs, alleletable = alleletable)
+
+      genos <- geno(SNPlist)$GP
+
+      ## Compute score
+      classifScore <- classifSNPsImpute(genos, R2 = SNPsR2, refs = refs)
+      inv <- getInvStatus(scores = classifScore$scores)
+      res <- new("SNPfieRes", classification = inv$class,
+                 scores = classifScore$scores, numSNPs = classifScore$numSNPs,
+                 certainty = inv$certainty)
+      return(res)
+    } else {
+      vcf <- SNPlist
+      SNPlist <- VariantAnnotation::genotypeToSnpMatrix(vcf)
+
+      SNPlist$map$position <- start(rowRanges(vcf))
+      SNPlist$map$chromosome <- as.character(seqnames(rowRanges(vcf)))
+      SNPlist$genotypes <- SNPlist$genotypes[, !SNPlist$map$ignore]
+      SNPlist$map <- SNPlist$map[!SNPlist$map$ignore, ]
+      SNPlist$map$allele.2 <- unlist(SNPlist$map$allele.2)
+      rownames(SNPlist$map) <- SNPlist$map$snp.names
     }
-
-    SNPlist <- SNPlist[commonSNPs, ]
-
-    # Create alleleTable
-    map <- prepareMap(SNPlist)
-    alleletable <- getAlleleTable(map)
-    alleletable <- correctAlleleTable(alleletable = alleletable, hetRefs = hetRefs, map = map)
-
-    # Order alleles in Refs as in our VCF
-    refs <- adaptRefs(Refs = Refs, alleletable = alleletable)
-
-    genos <- geno(SNPlist)$GP
-
-    ## Compute score
-    classifScore <- classifSNPsImpute(genos, R2 = SNPsR2, refs = refs)
-    inv <- getInvStatus(scores = classifScore$scores)
-    res <- new("SNPfieRes", classification = inv$class,
-               scores = classifScore$scores, numSNPs = classifScore$numSNPs,
-               certainty = inv$certainty)
-    return(res)
-  } else {
+  }
 
   if (!all(c("map", "genotypes") %in% names(SNPlist))){
     stop("SNPlist must contain map and genotypes elements")
@@ -70,7 +88,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
   SNPsR2 <- SNPsR2[SNPsR2 >= R2]
 
   ## Filter objects to only those included in the references
-  commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(map), names(alfreq)))
+  commonSNPs <- Reduce(intersect, list(names(SNPsR2), names(hetRefs), names(Refs), rownames(map)))
 
   if (!length(commonSNPs)){
     stop("There are no common SNPs between the SNP object and the reference.")
@@ -94,14 +112,12 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
     message("Computing scores")
   }
   classifScore <- classifSNPs(genos = genos, R2 = SNPsR2, refs = Refs,
-                                alfreq = alfreq, genofreq = genofreq,
-                                mc.cores = mc.cores)
+                              mc.cores = mc.cores)
   inv <- getInvStatus(scores = classifScore$scores)
-  res <- new("SNPfieRes", classification = inv$class, probs = classifScore$probs,
+  res <- new("SNPfieRes", classification = inv$class,
              scores = classifScore$scores, numSNPs = classifScore$numSNPs,
              certainty = inv$certainty)
   return(res)
-  }
 }
 
 
@@ -124,7 +140,7 @@ adaptRefs <- function(Refs, alleletable){
 }
 
 prepareMap <- function(vcf){
-  map <- mcols(rowRanges(vcf))
+  map <- GenomicRanges::mcols(GenomicRanges::rowRanges(vcf))
   rownames(map) <- rownames(vcf)
   cnmap <- colnames(map)
   cnmap[cnmap == "REF"] <- "allele.1"

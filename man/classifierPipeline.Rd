@@ -4,8 +4,8 @@
 \alias{classifierPipeline}
 \title{Classify inversions using identity}
 \usage{
-classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0, alfreq, genofreq,
-  imputed = FALSE, mc.cores = 1, verbose = FALSE)
+classifierPipeline(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0, imputed = FALSE,
+  mc.cores = 1, verbose = FALSE)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
@@ -19,9 +19,8 @@ with the annotation)}
 
 \item{R2}{Vector with the R2 between the SNPs and the inversion status}
 
-\item{alfreq}{List with the allele frequencies in the target population}
-
-\item{genofreq}{Vector with the frequency of each haplotype}
+\item{imputed}{Logical. If TRUE, scores are computed using posterior probabilities.
+If FALSE, scores are computed using best guess. Only applied when SNPlist is a VCF.}
 
 \item{mc.cores}{Numeric with the number of cores used in the computation}
 
@@ -32,4 +31,11 @@ A \code{SNPfieRes} object
 }
 \description{
 Classify inversions using identity
+}
+\examples{
+if(require(VariantAnnotation)){
+  vcf <- readVcf(system.file("extdata", "example.vcf", package = "snpfier"), "hg19")
+  res <- classifierPipeline(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+  Refs$HsInv0286, mc.cores = 1)
+}
 }

@@ -10,8 +10,8 @@
 #' @docType package
 #' @name SNPfier
 #'
-#' @import MASS
 #' @importFrom Biostrings complement DNAStringSet
 #' @importFrom methods as
 #' @importFrom parallel mclapply
+#' @importClassesFrom snpStats SnpMatrix
 NULL
