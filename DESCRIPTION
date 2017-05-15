@@ -1,6 +1,6 @@
 Package: snpfier
 Title: Get inversion status in predefined regions
-Version: 0.99.10
+Version: 0.99.11
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
   person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
 Description: SNPfier can get the samples' inversion status of known inversions. SNPfier uses SNP data as
@@ -18,7 +18,8 @@ Imports: Biostrings,
     parallel,
     methods,
     snpStats,
-    VariantAnnotation
+    VariantAnnotation,
+    GenomicRanges
 Suggests: testthat,
     knitr,
     BiocStyle,

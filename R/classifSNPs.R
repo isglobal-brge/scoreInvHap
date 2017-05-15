@@ -1,8 +1,7 @@
 #' Get similarity scores and probability
 #'
 #' This function computes the similarity scores between the sample SNPs and the haplotype's
-#' reference. It also returns the probability of each sample to belong to the
-#' different haplotypes.
+#' reference.
 #'
 #' @details classifSNPs computes, for each individual, similarity scores for
 #' all the present haplotypes. For each SNP, we compute as many similarity scores
@@ -26,6 +25,14 @@
 #' \item{scores: Matrix with the simmilarity scores of the individuals}
 #' \item{numSNPs: Vector with the number of SNPs used in each computation}
 #' }
+#' @examples
+#' ## Simulate a table of genotypes from ROIno.8.3
+#' geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
+#' nrow = 3, dimnames = list(letters[1:3],
+#' c("rs141039449", "rs138092889", "rs138217047")))
+#'
+#' ## Run function using reference of ROIno.8.3
+#' classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3, mc.cores = 1)
 classifSNPs <- function(genos, R2, refs, mc.cores){
 
     # Select SNPs present in R2, references and genotypes

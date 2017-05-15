@@ -30,7 +30,8 @@ If FALSE, scores are computed using best guess. Only applied when SNPlist is a V
 A \code{SNPfieRes} object
 }
 \description{
-Classify inversions using identity
+This is the main function of `snpfier` package. This function accepts
+SNPs data in a plink or a VCF format and compute the inversion prediction.
 }
 \examples{
 if(require(VariantAnnotation)){

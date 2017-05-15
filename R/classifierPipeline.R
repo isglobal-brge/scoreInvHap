@@ -1,5 +1,8 @@
 #' Classify inversions using identity
 #'
+#' This is the main function of `snpfier` package. This function accepts
+#' SNPs data in a plink or a VCF format and compute the inversion prediction.
+#'
 #' @export
 #' @param SNPlist List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 #' with the annotation)
@@ -140,7 +143,7 @@ adaptRefs <- function(Refs, alleletable){
 }
 
 prepareMap <- function(vcf){
-  map <- GenomicRanges::mcols(GenomicRanges::rowRanges(vcf))
+  map <- GenomicRanges::mcols(rowRanges(vcf))
   rownames(map) <- rownames(vcf)
   cnmap <- colnames(map)
   cnmap[cnmap == "REF"] <- "allele.1"

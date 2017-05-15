@@ -11,6 +11,7 @@
 #' @name SNPfier
 #'
 #' @importFrom Biostrings complement DNAStringSet
+#' @importFrom GenomicRanges mcols
 #' @importFrom methods as
 #' @importFrom parallel mclapply
 #' @importClassesFrom snpStats SnpMatrix

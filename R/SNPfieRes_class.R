@@ -12,6 +12,23 @@
 #' @slot numSNPs Numeric with SNPs used to compute the scores.
 #' @slot certainty Numeric with the certainty of the classification for each individual.
 #' @return A SNPfieRes instance
+#' @examples
+#' if(require(VariantAnnotation)){
+#'   vcf <- readVcf(system.file("extdata", "example.vcf", package = "snpfier"), "hg19")
+#'
+#'   ## Create SNPfieRes class from pipeline
+#'   res <- classifierPipeline(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+#'   Refs$HsInv0286, mc.cores = 1)
+#'
+#'   ## Print object
+#'   res
+#'
+#'   ## Get haplotype classification
+#'   classification(res)
+#'
+#'   ## Get similiraty scores
+#'   scores(res)
+#' }
 setClass (
   Class = "SNPfieRes",
   representation(
@@ -27,7 +44,7 @@ setGeneric("classification", function(object){
   standardGeneric("classification")
 })
 
-#' @describeIn SNPfieRes Get samples classification
+#' @describeIn SNPfieRes Get classification
 #' @aliases SNPfieRes-methods classification
 #' @param object \code{SNPfieRes}
 setMethod(
@@ -74,7 +91,7 @@ setGeneric("scores", function(object){
   standardGeneric("scores")
 })
 
-#' @describeIn SNPfieRes Get samples similarity scores
+#' @describeIn SNPfieRes Get similarity scores
 #' @aliases SNPfieRes-methods scores
 setMethod(
   f = "scores",

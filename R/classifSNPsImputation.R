@@ -1,4 +1,5 @@
 #' @rdname classifSNPs
+#' @export
 classifSNPsImpute <- function(genos, R2, refs, mc.cores = 1){
 
   # Select SNPs present in R2, references and genotypes

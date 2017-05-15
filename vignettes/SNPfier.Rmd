@@ -28,8 +28,8 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 `r Rpackage("snpfier")` infers haplotype inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs in your cohort and reference haplotypes. Samples are classified to the haplotype with the highest score. There are other approaches to perform this task such us [inveRsion](https://bioconductor.org/packages/release/bioc/html/inveRsion.html), [invClust](http://nar.oxfordjournals.org/content/early/2015/02/05/nar.gkv073.full) or [PFIDO](https://github.com/MaxSalm/pfido) that are based on multivariate clustering procedures. Using these methods have several limitation when:
 
 * __analizing limited or moderate number of samples__. Clustering methods require to have large number of samples to perform clustering to properly discriminate haplotype inversion status. In particular, calling of a single sample cannot be performed without having a reference data. 
-* __analyzing data from different SNP arrays__ .  `r Rpackage("PFIDO")` and `r Rpackage("invClust")` may provide different answers depending on which array is used (i.e., Illumina 1M, Affy 6.0, ...) since dfferent coverage may lead to perform the calling using different number of SNPs of a given inverted region. 
-* __combining calling from different SNP arrrays__ . `r Rpackage("invClust")` and `r Rpackage("PFIDO")` clasify each individual as homozygous normal, heterozygous or homozygous inverted depending on cluster frequency. In those cases where inversion with haplotype frequency is close to 50%, both methods may have problems to determine which is the reference haplotype. Performing calling in different cohort of samples may lead to wrong results when combining data from different studies.
+* __analyzing data from different SNP arrays__.  `r Rpackage("PFIDO")` and `r Rpackage("invClust")` may provide different answers depending on which array is used (i.e., Illumina 1M, Affy 6.0, ...) since dfferent coverage may lead to perform the calling using different number of SNPs of a given inverted region. 
+* __combining calling from different SNP arrrays__. `r Rpackage("invClust")` and `r Rpackage("PFIDO")` clasify each individual as homozygous normal, heterozygous or homozygous inverted depending on cluster frequency. In those cases where inversion with haplotype frequency is close to 50%, both methods may have problems to determine which is the reference haplotype. Performing calling in different cohort of samples may lead to wrong results when combining data from different studies.
 
 `r Rpackage("snpfier")` overcomes these difficulties by using a set of reference genotypes that has been used to properly characterize the inversion of interest. Genomic information such as linkage desequillibrium (R^2^) and hetgerozygous sequence has been determined for the region of interest (ROI).  
 
@@ -41,18 +41,18 @@ The package can be loaded by typing:
 library(snpfier)
 ```
 
-Calling procedure requires three objects that characterize the inversion of interest: the reference genotypes, the SNPs R^2^ and the heterozygous reference. `r Rpackage("snpfier")`  contains these required objects for two well known genomic inversions: 2q13 (ROIno.2.13), 3q29 (ROIno.3.2), 7q11.21 (ROIno.7.10), 8p23 (ROIno.8.3), 16p11.2 (ROIno.16.13) and 17q21.31 (ROIno.17.16). These required objects of this 6 inversions are available in the package. Each inversion is annotated using the ROI numbers used in [Sander's paper](http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract). The objects have been created using VCF phase 3 data of [1000 Genomes Project](http://www.internationalgenome.org/). The code used to generate them can be found in the /inst/scripts folder of the package. This code can be modified to create the required files of any other inversion of interest. 
+Calling procedure requires three objects that characterize the inversion of interest: the reference genotypes, the SNPs R^2^ and the heterozygous reference. `r Rpackage("snpfier")`  contains these required objects for four inversions. Two of them are well known genomic inversions: 8p23 (ROIno.8.3) and 17q21.31 (ROIno.17.16). These inversions are annotated using the ROI numbers used in [Sander's paper](http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract). We have also included two inversions present in [invFEST database](http://invfestdb.uab.cat/): 7p11.2 (HsInv0286) and Xq13.2 (HsInv0396). These objects have been created using VCF phase 3 data of [1000 Genomes Project](http://www.internationalgenome.org/). The code used to generate them can be found in the /inst/scripts folder of the package. This code can be modified to create the required files of any other inversion of interest. 
 
 ## Reference genotypes
 
-As previously stated, the method needs, for each SNP located into the inversion region, the frequency of genotypes in the homozygous standard, heterozygous and homozygous inverted populations. This information is encoded in an object called `Refs` that can be loaded by typing:
+As previously stated, the method needs, for each SNP located into the inversion region, the frequency of genotypes in the different haplotype  populations. This information is encoded in an object called `Refs` that can be loaded by typing:
 
 ```{r, load data}
 data("Refs")
 names(Refs)
 ```
 
-Each element of this list is a reference for one of the 6 available inversions. For instance, the reference of inversion ROIno.8.3 can be obtained by executing: 
+Each element of this list is a reference for one of the four available inversions. For instance, the reference of inversion ROIno.8.3 can be obtained by executing: 
 
 ```{r, Refs}
 ref <- Refs$ROIno.8.3
@@ -95,7 +95,7 @@ head(hRefs)
 * genotypes: a SNPMatrix with individuals in rows and SNPs in columns
 * map: a data.frame with the SNPs annotation. It *must* contain the columns *allele.1* and *allele.2* with the alleles of the SNPs. 
 
-We can load a vcf file into a `VCF` object using the `r Rpackage("VariantAnnotation")`. We have included a small vcf in `r Rpackage("snpfier")` package. This VCF contains a subset of SNPs from 30 European individuals of the 1000 Genomes project. All these SNPs are from the region 7p11.2, the region of HsInv0286. This vcf file contains imputation results. We can load the vcf with the following code:
+We can load a vcf file into a `VCF` object using the `r Biocpkg("VariantAnnotation")`. We have included a small vcf in `r Rpackage("snpfier")` package. This file contains a subset of SNPs from 30 European individuals of the 1000 Genomes project. All these SNPs are from the region 7p11.2, the region of HsInv0286. This vcf file contains imputation results. We can load the vcf with the following code:
 
 ```{r, Load SNPs, message=FALSE}
 library(VariantAnnotation)
@@ -106,8 +106,9 @@ vcf
 
 `vcf` contains 380 SNPs and 30 samples. Now we are ready to classify the samples. The function `classifierPipeline` needs four objects: the genotypes and their annotation (`SNPlist`) and the three objects that characterize the inversion. `Refs` is the list of matrices with the frequency of each genotypes in each inversion population. `SNPsR2` is the numeric vector with the SNPs R^2^ and `hetRefs` is the vector with the heterozygous genotypes of the SNPs. We will get the inversion status of the inversion HsInv0286.:  
 
-```{r, classify, cache=TRUE}
-res <- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286)
+```{r, classify}
+res <- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, 
+                          hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286)
 res
 ```
 
@@ -122,18 +123,19 @@ head(scores(res))
 
 ## Imputed data
 
-When SNPs are imputated, we obtain three results: the best-guess, the dosage and the posterior probabilities. By default, `classifierPipeline` use the best-guess when computing the simmilarity scores. However, we can also use posterior probabilities to compute the scores. The argument `imputed` changes this behaviour:
+When SNPs are imputed, we obtain three results: the best-guess, the dosage and the posterior probabilities. By default, `classifierPipeline` use the best-guess when computing the simmilarity scores. However, we can also use posterior probabilities setting the argument `imputed` to TRUE:
 
-```{r, classify imputed, cache=TRUE}
-res_imp <- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286, imputed = TRUE)
+```{r, classify imputed}
+res_imp <- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, 
+                              hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286, imputed = TRUE)
 res_imp
 ```
 
-In this case, the samples were classified identically in both cases:
+In this case, the samples were identically classified in both cases:
 
-```{r, compare classifications, cache=TRUE}
-res_imp <- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286, imputed = TRUE)
-res_imp
+```{r, compare classifications}
+table(PostProbs = classification(res_imp), 
+      BestGuess = classification(res))
 ```
 
 # Other features

@@ -38,13 +38,13 @@ Container with the results of the classification pipeline
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{classification}: Get samples classification
+\item \code{classification}: Get classification
 
 \item \code{certainty}: Get classification certainty
 
 \item \code{numSNPs}: Get number of SNPs used in computation
 
-\item \code{scores}: Get samples similarity scores
+\item \code{scores}: Get similarity scores
 }}
 
 \section{Slots}{
@@ -59,3 +59,21 @@ Container with the results of the classification pipeline
 \item{\code{certainty}}{Numeric with the certainty of the classification for each individual.}
 }}
 
+\examples{
+if(require(VariantAnnotation)){
+  vcf <- readVcf(system.file("extdata", "example.vcf", package = "snpfier"), "hg19")
+
+  ## Create SNPfieRes class from pipeline
+  res <- classifierPipeline(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+  Refs$HsInv0286, mc.cores = 1)
+
+  ## Print object
+  res
+
+  ## Get haplotype classification
+  classification(res)
+
+  ## Get similiraty scores
+  scores(res)
+}
+}

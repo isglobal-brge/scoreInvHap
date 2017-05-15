@@ -28,8 +28,7 @@ List with the results:
 }
 \description{
 This function computes the similarity scores between the sample SNPs and the haplotype's
-reference. It also returns the probability of each sample to belong to the
-different haplotypes.
+reference.
 }
 \details{
 classifSNPs computes, for each individual, similarity scores for
@@ -41,4 +40,13 @@ by the R2 between the SNP and the haplotype classification.
 
 classifSNPsImpute is a version of classifSNPs that works with posterior probabilities
 of imputed genotypes.
+}
+\examples{
+## Simulate a table of genotypes from ROIno.8.3
+geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
+nrow = 3, dimnames = list(letters[1:3],
+c("rs141039449", "rs138092889", "rs138217047")))
+
+## Run function using reference of ROIno.8.3
+classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3, mc.cores = 1)
 }
