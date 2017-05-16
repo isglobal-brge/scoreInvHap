@@ -9,7 +9,7 @@ Description: SNPfier can get the samples' inversion status of known inversions. 
  reference. The package include this data for two well known inversions (8p23 and 17q21.31) and for 
  two additional regions.
 Depends:
-    R (>= 3.4.0)
+    R (>= 3.3.0)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
