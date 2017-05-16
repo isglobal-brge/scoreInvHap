@@ -108,7 +108,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
   if (verbose){
     message("Computing genotype table")
   }
-  geno <- SNPlist$genotypes[, rownames(map)]
+  geno <- SNPlist$genotypes[, rownames(alleletable)]
   genos <- getGenotypesTable(geno = geno, allele = alleletable)
 
   if (verbose){
