@@ -43,9 +43,9 @@ library(snpfier)
 
 Calling procedure requires three objects that characterize the inversion of interest: 
 
-> - the reference genotypes,
-> - the SNPs R^2^, and 
-> - the heterozygous reference. 
+- the reference genotypes,
+- the SNPs R^2^, and 
+- the heterozygous reference. 
 
 `r Rpackage("snpfier")` already contains these required objects of four inversions. Two of them are well known and characterized genomic inversions: 8p23 (ROIno.8.3) and 17q21.31 (ROIno.17.16). These inversions are annotated using the ROI numbers used in [Sander's paper](http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract). We have also included two inversions that are described in [invFEST database](http://invfestdb.uab.cat/): 7p11.2 (HsInv0286) and Xq13.2 (HsInv0396). These objects have been created using VCF phase 3 data of [1000 Genomes Project](http://www.internationalgenome.org/). The code used to generate them can be found in the `/inst/scripts` folder of the package. This code can be modified to create the required files of any other inversion of interest. Required information of other inversions will be incorporated in the future when checked in our group or described in the literature. 
 
@@ -95,12 +95,28 @@ In that case, `hRefs` is a character vector contaning the heterozygous genotypes
 
 # Running snpfier: calling inversions
 
-`r Rpackage("snpfier")` deals with data either in PLINK format or as Bioconductor `VCF` class. In the case of having PLINK data, a list with two elements is required:
-
-**NOTA: Carlos, normalmente la gente tiene el .fam, .ped, map files (o como se llamen)  y esto lo leen con read.plink, verdad?  entonces hay que partir de ahí ... si luego sólo le pasas el $genotype y el $map de ese objeto leído con read.plink hay que poner el código .. aunque no tengamos unos datos reales **
+`r Rpackage("snpfier")` deals with data either in a `SNPMatrix` or as Bioconductor `VCF` class. In the case of `SNPMatrix`, a list with two elements is required:
 
 * genotypes: a SNPMatrix with individuals in rows and SNPs in columns
 * map: a data.frame with the SNPs annotation. It *must* contain the columns *allele.1* and *allele.2* with the alleles of the SNPs. 
+
+We can load our data from a ped file or from plink binary format (.bed, .bim) to a `SNPMatrix` using `r Biocpkg("snpStats")`:
+
+```{r, eval=FALSE}
+library(snpStats)
+
+## From a bed 
+snps <- read.plink("example.bed")
+
+## From a pedfile
+snps <- read.pedfile("example.ped", snps = "example.map")
+```
+
+
+In both cases, snps is a list containing the elements genotypes and map. This object can be passed to `r Rpackage("snpfier")` functions. 
+
+
+
 
 We can load a vcf file into a `VCF` object using the `r Biocpkg("VariantAnnotation")`. We have included a small vcf in `r Rpackage("snpfier")` package to illustrate how to deal with this data. This file contains a subset of SNPs of 30 European individuals belonging to the 1000 Genomes project. All these SNPs are located at the region 7p11.2, the region annotated as HsInv0286 in the [Sander's paper](http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract). This vcf file contains imputed data. We can load the vcf with the following code:
 
@@ -113,10 +129,10 @@ vcf
 
 We can observe that the object `vcf` contains 380 SNPs and 30 samples. Now we are ready to classify the samples with regard to the inversion HsInv0286 by using the function `classifierPipeline`. This function requires four pieces of information:
 
-> - sample genotypes and their annotation (argument `SNPlist`),
-> - the list of matrices with the frequency of each genotypes in each inversion population (argument `Refs`),
-> - the numeric vector with the SNPs R^2^ (argument `SNPsR2`), and
-> - the vector with the heterozygous genotypes of the SNPs (argument `hetRefs`). 
+- sample genotypes and their annotation (argument `SNPlist`),
+- the list of matrices with the frequency of each genotypes in each inversion population (argument `Refs`),
+- the numeric vector with the SNPs R^2^ (argument `SNPsR2`), and
+- the vector with the heterozygous genotypes of the SNPs (argument `hetRefs`). 
 
 The HsInv0286 inversion status of the 30 samples from 1000 genomes is obtained by:  
 
@@ -154,3 +170,8 @@ table(PostProbs = classification(res_imp),
 # Other features
 
 There are two additional parameters of `classifierPipeline` than can reduce computing time: `R2` and `mc.cores`. `R2` indicates the minimum R^2^ that a SNP should have with the inversion to be included in the score. The less number of SNPs the less time it takes. By default, all SNPs are included in the computation. On the other hand, `mc.cores` allows to parallelize the computation of the score. However, given that it relies on `mclapply` function of `r Rpackage("parallel")` package, this option is not available in Windows. 
+
+```{r}
+sessionInfo()
+```
+
