@@ -115,9 +115,6 @@ snps <- read.pedfile("example.ped", snps = "example.map")
 
 In both cases, snps is a list containing the elements genotypes and map. This object can be passed to `r Rpackage("snpfier")` functions. 
 
-
-
-
 We can load a vcf file into a `VCF` object using the `r Biocpkg("VariantAnnotation")`. We have included a small vcf in `r Rpackage("snpfier")` package to illustrate how to deal with this data. This file contains a subset of SNPs of 30 European individuals belonging to the 1000 Genomes project. All these SNPs are located at the region 7p11.2, the region annotated as HsInv0286 in the [Sander's paper](http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract). This vcf file contains imputed data. We can load the vcf with the following code:
 
 ```{r, Load SNPs, message=FALSE}
