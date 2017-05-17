@@ -1,6 +1,6 @@
 Package: snpfier
 Title: Get inversion status in predefined regions
-Version: 0.99.11
+Version: 0.99.12
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
   person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
 Description: SNPfier can get the samples' inversion status of known inversions. SNPfier uses SNP data as
@@ -9,7 +9,7 @@ Description: SNPfier can get the samples' inversion status of known inversions. 
  reference. The package include this data for two well known inversions (8p23 and 17q21.31) and for 
  two additional regions.
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.4.0)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
