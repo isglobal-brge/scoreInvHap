@@ -88,13 +88,11 @@ Bioinformatics Research Group in Epidemiolgy (BRGE)<br />
 <p>The package can be loaded by typing:</p>
 <pre class="r"><code>library(snpfier)</code></pre>
 <p>Calling procedure requires three objects that characterize the inversion of interest:</p>
-<blockquote>
 <ul>
 <li>the reference genotypes,</li>
 <li>the SNPs R<sup>2</sup>, and</li>
 <li>the heterozygous reference.</li>
 </ul>
-</blockquote>
 <p><em>snpfier</em> already contains these required objects of four inversions. Two of them are well known and characterized genomic inversions: 8p23 (ROIno.8.3) and 17q21.31 (ROIno.17.16). These inversions are annotated using the ROI numbers used in <a href="http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract">Sander’s paper</a>. We have also included two inversions that are described in <a href="http://invfestdb.uab.cat/">invFEST database</a>: 7p11.2 (HsInv0286) and Xq13.2 (HsInv0396). These objects have been created using VCF phase 3 data of <a href="http://www.internationalgenome.org/">1000 Genomes Project</a>. The code used to generate them can be found in the <code>/inst/scripts</code> folder of the package. This code can be modified to create the required files of any other inversion of interest. Required information of other inversions will be incorporated in the future when checked in our group or described in the literature.</p>
 <div id="reference-genotypes" class="section level2">
 <h2><span class="header-section-number">2.1</span> Reference genotypes</h2>
@@ -148,12 +146,20 @@ head(hRefs)</code></pre>
 </div>
 <div id="running-snpfier-calling-inversions" class="section level1">
 <h1><span class="header-section-number">3</span> Running snpfier: calling inversions</h1>
-<p><em>snpfier</em> deals with data either in PLINK format or as Bioconductor <code>VCF</code> class. In the case of having PLINK data, a list with two elements is required:</p>
-<p><strong>NOTA: Carlos, normalmente la gente tiene el .fam, .ped, map files (o como se llamen) y esto lo leen con read.plink, verdad? entonces hay que partir de ahí … si luego sólo le pasas el $genotype y el $map de ese objeto leído con read.plink hay que poner el código .. aunque no tengamos unos datos reales </strong></p>
+<p><em>snpfier</em> deals with data either in a <code>SNPMatrix</code> or as Bioconductor <code>VCF</code> class. In the case of <code>SNPMatrix</code>, a list with two elements is required:</p>
 <ul>
 <li>genotypes: a SNPMatrix with individuals in rows and SNPs in columns</li>
 <li>map: a data.frame with the SNPs annotation. It <em>must</em> contain the columns <em>allele.1</em> and <em>allele.2</em> with the alleles of the SNPs.</li>
 </ul>
+<p>We can load our data from a ped file or from plink binary format (.bed, .bim) to a <code>SNPMatrix</code> using <em><a href="http://bioconductor.org/packages/snpStats">snpStats</a></em>:</p>
+<pre class="r"><code>library(snpStats)
+
+## From a bed 
+snps &lt;- read.plink(&quot;example.bed&quot;)
+
+## From a pedfile
+snps &lt;- read.pedfile(&quot;example.ped&quot;, snps = &quot;example.map&quot;)</code></pre>
+<p>In both cases, snps is a list containing the elements genotypes and map. This object can be passed to <em>snpfier</em> functions.</p>
 <p>We can load a vcf file into a <code>VCF</code> object using the <em><a href="http://bioconductor.org/packages/VariantAnnotation">VariantAnnotation</a></em>. We have included a small vcf in <em>snpfier</em> package to illustrate how to deal with this data. This file contains a subset of SNPs of 30 European individuals belonging to the 1000 Genomes project. All these SNPs are located at the region 7p11.2, the region annotated as HsInv0286 in the <a href="http://genome.cshlp.org/content/early/2016/10/07/gr.201160.115.abstract">Sander’s paper</a>. This vcf file contains imputed data. We can load the vcf with the following code:</p>
 <pre class="r"><code>library(VariantAnnotation)
 vcf_file &lt;- system.file(&quot;extdata&quot;, &quot;example.vcf&quot;, package = &quot;snpfier&quot;)
@@ -179,14 +185,12 @@ vcf</code></pre>
 ##    DS 1      Float  Estimated Alternate Allele Dosage : [P(0/1)+2*P(1/1)] 
 ##    GP 3      Float  Estimated Posterior Probabilities for Genotypes 0/0...</code></pre>
 <p>We can observe that the object <code>vcf</code> contains 380 SNPs and 30 samples. Now we are ready to classify the samples with regard to the inversion HsInv0286 by using the function <code>classifierPipeline</code>. This function requires four pieces of information:</p>
-<blockquote>
 <ul>
 <li>sample genotypes and their annotation (argument <code>SNPlist</code>),</li>
 <li>the list of matrices with the frequency of each genotypes in each inversion population (argument <code>Refs</code>),</li>
 <li>the numeric vector with the SNPs R<sup>2</sup> (argument <code>SNPsR2</code>), and</li>
 <li>the vector with the heterozygous genotypes of the SNPs (argument <code>hetRefs</code>).</li>
 </ul>
-</blockquote>
 <p>The HsInv0286 inversion status of the 30 samples from 1000 genomes is obtained by:</p>
 <pre class="r"><code>res &lt;- classifierPipeline(SNPlist = vcf, SNPsR2 = SNPsR2$HsInv0286, 
                           hetRefs = hetRefs$HsInv0286, Refs = Refs$HsInv0286)
@@ -256,6 +260,46 @@ res_imp</code></pre>
 <div id="other-features" class="section level1">
 <h1><span class="header-section-number">4</span> Other features</h1>
 <p>There are two additional parameters of <code>classifierPipeline</code> than can reduce computing time: <code>R2</code> and <code>mc.cores</code>. <code>R2</code> indicates the minimum R<sup>2</sup> that a SNP should have with the inversion to be included in the score. The less number of SNPs the less time it takes. By default, all SNPs are included in the computation. On the other hand, <code>mc.cores</code> allows to parallelize the computation of the score. However, given that it relies on <code>mclapply</code> function of <em>parallel</em> package, this option is not available in Windows.</p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.3.2 (2016-10-31)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 14393)
+## 
+## locale:
+## [1] LC_COLLATE=Spanish_Spain.1252  LC_CTYPE=Spanish_Spain.1252   
+## [3] LC_MONETARY=Spanish_Spain.1252 LC_NUMERIC=C                  
+## [5] LC_TIME=Spanish_Spain.1252    
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] snpStats_1.24.0            Matrix_1.2-7.1            
+##  [3] survival_2.40-1            VariantAnnotation_1.20.3  
+##  [5] Rsamtools_1.26.1           Biostrings_2.42.1         
+##  [7] XVector_0.14.0             SummarizedExperiment_1.4.0
+##  [9] Biobase_2.34.0             GenomicRanges_1.26.4      
+## [11] GenomeInfoDb_1.10.2        IRanges_2.8.1             
+## [13] S4Vectors_0.12.1           BiocGenerics_0.20.0       
+## [15] snpfier_0.99.11            BiocStyle_2.2.1           
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.9              GenomicFeatures_1.26.2  
+##  [3] bitops_1.0-6             tools_3.3.2             
+##  [5] zlibbioc_1.20.0          biomaRt_2.30.0          
+##  [7] digest_0.6.11            BSgenome_1.42.0         
+##  [9] evaluate_0.10            RSQLite_1.1-2           
+## [11] memoise_1.0.0            lattice_0.20-34         
+## [13] DBI_0.5-1                yaml_2.1.14             
+## [15] rtracklayer_1.34.1       stringr_1.2.0           
+## [17] knitr_1.15.1             rprojroot_1.2           
+## [19] grid_3.3.2               AnnotationDbi_1.36.1    
+## [21] XML_3.98-1.5             BiocParallel_1.8.1      
+## [23] rmarkdown_1.3            magrittr_1.5            
+## [25] GenomicAlignments_1.10.0 backports_1.0.5         
+## [27] htmltools_0.3.5          splines_3.3.2           
+## [29] stringi_1.1.2            RCurl_1.95-4.8</code></pre>
 </div>
 
 
