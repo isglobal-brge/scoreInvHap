@@ -25,6 +25,9 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
                                imputed = FALSE,
                                mc.cores = 1, verbose = FALSE){
   if (is(SNPlist, "VCF")){
+    dupSNPs <- rownames(SNPlist)[duplicated(rownames(SNPlist))]
+    SNPlist <- SNPlist[!rownames(SNPlist) %in% dupSNPs, ]
+
     if (imputed){
 
       ## Select SNPs with a R2 equal or higher than the threshold
@@ -39,15 +42,21 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
 
       SNPlist <- SNPlist[commonSNPs, ]
 
+      ## Filter SNPs with bad imputation quality
+      SNPlist <- SNPlist[info(SNPlist)$R2 > 0.4, ]
+
       # Create alleleTable
       map <- prepareMap(SNPlist)
       alleletable <- getAlleleTable(map)
       alleletable <- correctAlleleTable(alleletable = alleletable, hetRefs = hetRefs, map = map)
 
-      # Order alleles in Refs as in our VCF
-      refs <- adaptRefs(Refs = Refs, alleletable = alleletable)
-
       genos <- geno(SNPlist)$GP
+
+      haploid <- ifelse(dim(genos)[3] == 2, TRUE, FALSE)
+
+      # Order alleles in Refs as in our VCF
+      refs <- adaptRefs(Refs = Refs, alleletable = alleletable, haploid = haploid)
+
 
       ## Compute score
       classifScore <- classifSNPsImpute(genos, R2 = SNPsR2, refs = refs)
@@ -124,7 +133,7 @@ classifierPipeline <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
 }
 
 
-adaptRefs <- function(Refs, alleletable){
+adaptRefs <- function(Refs, alleletable, haploid = FALSE){
   rb <- lapply(rownames(alleletable), function(snp) {
     als <- unlist(alleletable[snp, 1:3])
     rb <- Refs[[snp]]
@@ -136,7 +145,11 @@ adaptRefs <- function(Refs, alleletable){
       rb <- cbind(rb, 0)
       colnames(rb)[3] <- als[!als %in% colnames(rb)]
     }
-    rb[, als]
+    rb <- rb[, als]
+    if (haploid){
+      rb <- rb[, -2]
+    }
+    rb
   })
   names(rb) <- rownames(alleletable)
   rb
