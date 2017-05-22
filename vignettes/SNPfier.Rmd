@@ -148,6 +148,60 @@ head(classification(res))
 head(scores(res))
 ```
 
+## Quality control
+
+We can retrieve other values that are useful to evaluate the quality of the classification. For each sample, we can obtain its highest similarity score and the difference between the highest similarity score and the second highest:
+
+```{r, snpfier scores}
+# Get max score
+head(maxscores(res))
+# Get difference score
+head(diffscores(res))
+```
+
+A classification is good when the highest score is close to 1 and the other scores are small. This means that the samples SNPs are almost the same than in one of the reference haplotypes and that they are different to the other references. We use the difference between the highest score and the second highest score as a measure of how different is the highest score from the rest. We can have a visual evaluation of these quality parameters with the function `plotScores`:
+
+```{r}
+plotScores(res, pch = 16, main = "QC based on scores")
+```
+
+The horizontal line of the plot is a suggestion of the minimum difference between the highest and the second score that we accept. By default, this value is set to 0.1 but it can be changed with the parameter `minDiff`. This default value equals to considering that the sample SNPs are at least 10% more similar to the top reference than to the other references. `plotScores` relies on the base plot function, so we can pass additional parameters to customize the plot. 
+
+The other quality control estimate are based on the number of SNPs used in the computation. `r Rpackage("snpfier")` allows having some missing measurements in the input data. However, this measurements are excluded from the computation of the scores. To reflect this issue, we have two measurements: the number of SNPs used in the computation and the proportion of non-missing measurements, or call rate:
+
+```{r}
+# Get Number of scores used
+head(numSNPs(res))
+# Get call rate
+head(propSNPs(res))
+```
+
+The number of SNPs must always be taken into account to evaluate the performance of the computation. It is highly recommended to use, at least, 15 SNPs in the computation. We have also included the function `plotCallRate` to plot the call rate of the samples:
+
+```{r}
+plotCallRate(res, main = "Call Rate QC")
+```
+
+The vertical line is the minimum recommended call rate to consider a sample. By default, it is set to 0.9 but can be changed with the parameter `callRate`. Again, `plotCallRate` relies on the base plot function, so we can customize the plot. 
+
+The function `classification` have two parameters that selects samples based on these two QC parameters. The argument `minDiff` sets the minimum difference between the highest and the second highest score to consider a sample. The argument `callRate` sets the minimum call rate of a sample to pass the QC. By default, both arguments are set to 0 so all the sample are included: 
+
+```{r}
+## No filtering
+length(classification(res))
+## QC filtering
+length(classification(res, minDiff = 0.1, callRate = 0.9))
+```
+
+Finally, the function `classification` has the argument `inversion` that, when it is set to TRUE, the haplotype based classification is transformed to an inversion based classification. This is useful for inversions HsInv0286 and HsInv0396 that have more than one haplotype per inversion status:
+
+```{r}
+## No filtering
+table(classification(res))
+## QC filtering
+table(classification(res, inversion = TRUE))
+```
+
 ## Imputed data
 
 When SNPs data are imputed, we obtain three different types of results: the best-guess, the dosage and the posterior probabilities. By default, `classifierPipeline` use the best-guess when computing the simmilarity scores. However, we can also use posterior probabilities setting the argument `imputed` to TRUE:

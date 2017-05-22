@@ -40,18 +40,37 @@ setClass (
 )
 
 #' @export
-setGeneric("classification", function(object){
+setGeneric("classification", function(object, minDiff = 0, callRate = 0, inversion = FALSE){
   standardGeneric("classification")
 })
 
 #' @describeIn SNPfieRes Get classification
 #' @aliases SNPfieRes-methods classification
 #' @param object \code{SNPfieRes}
+#' @param minDiff Numeric with the threshold of the minimum difference
+#' between the top and the second score. Used to filter samples.
+#' @param callRate Numeric with the threshold of the minimum call rate
+#' of the samples. Used to filter samples.
+#' @param inversion Logical. If true, haplotypes classification is adapted
+#' to return inversion status.
 setMethod(
   f = "classification",
   signature = "SNPfieRes",
-  definition = function(object) {
-    return(object@classification)
+  definition = function(object, minDiff, callRate, inversion) {
+    res <- object@classification
+    goodScores <- diffscores(object) > minDiff
+    goodSNPs <- propSNPs(object) > callRate
+
+    res <- res[goodScores & goodSNPs]
+    if (inversion){
+      regmatches(levels(res), gregexpr("Na", levels(res)), invert = FALSE) <- "N"
+      regmatches(levels(res), gregexpr("Nb", levels(res)), invert = FALSE) <- "N"
+      regmatches(levels(res), gregexpr("Nc", levels(res)), invert = FALSE) <- "N"
+      regmatches(levels(res), gregexpr("Ia", levels(res)), invert = FALSE) <- "I"
+      regmatches(levels(res), gregexpr("Ib", levels(res)), invert = FALSE) <- "I"
+      regmatches(levels(res), gregexpr("Ic", levels(res)), invert = FALSE) <- "I"
+    }
+    return(res)
   }
 )
 
@@ -72,6 +91,36 @@ setMethod(
 )
 
 #' @export
+setGeneric("diffscores", function(object){
+  standardGeneric("diffscores")
+})
+
+#' @describeIn SNPfieRes Get maximum similarity scores
+#' @aliases SNPfieRes-methods diffscores
+setMethod(
+  f = "diffscores",
+  signature = "SNPfieRes",
+  definition = function(object) {
+    return(apply(scores(object), 1, function(x) max(x) - sort(x, decreasing = TRUE)[2]))
+  }
+)
+
+#' @export
+setGeneric("maxscores", function(object){
+  standardGeneric("maxscores")
+})
+
+#' @describeIn SNPfieRes Get maximum similarity scores
+#' @aliases SNPfieRes-methods maxscores
+setMethod(
+  f = "maxscores",
+  signature = "SNPfieRes",
+  definition = function(object) {
+    return(apply(scores(object), 1, max))
+  }
+)
+
+#' @export
 setGeneric("numSNPs", function(object){
   standardGeneric("numSNPs")
 })
@@ -83,6 +132,60 @@ setMethod(
   signature = "SNPfieRes",
   definition = function(object) {
     return(object@numSNPs)
+  }
+)
+
+#' @export
+setGeneric("plotCallRate", function(object, callRate = 0.9, ...){
+  standardGeneric("plotCallRate")
+})
+
+#' @describeIn SNPfieRes Plot call rate based QC
+#' @aliases SNPfieRes-methods plotCallRate
+#' @param ... Further parameters passed to plot function.
+setMethod(
+  f = "plotCallRate",
+  signature = "SNPfieRes",
+  definition = function(object, callRate = 0.9, ...) {
+
+    hist(propSNPs(object), breaks = seq(0, 1, 0.05), xlim = c(0, 1),
+         xlab = "SNPs proportion", ...)
+    abline(v = callRate)
+  }
+)
+
+#' @export
+setGeneric("plotScores", function(object, minDiff = 0.1, ...){
+  standardGeneric("plotScores")
+})
+
+#' @describeIn SNPfieRes Plot scores based QC
+#' @aliases SNPfieRes-methods plotScores
+setMethod(
+  f = "plotScores",
+  signature = "SNPfieRes",
+  definition = function(object, minDiff = 0.1, ...) {
+
+    plot(maxscores(object), diffscores(object), xlim = c(0, 1),
+         xlab = "Max Scores", ylab = "Diff Score", ...)
+    abline(h = minDiff)
+  }
+)
+
+
+#' @export
+setGeneric("propSNPs", function(object){
+  standardGeneric("propSNPs")
+})
+
+#' @export
+#' @describeIn SNPfieRes Get proportions of SNPs used in computation
+#' @aliases SNPfieRes-methods propSNPs
+setMethod(
+  f = "propSNPs",
+  signature = "SNPfieRes",
+  definition = function(object) {
+    return(numSNPs(object)/max(numSNPs(object)))
   }
 )
 

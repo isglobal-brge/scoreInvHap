@@ -11,24 +11,61 @@
 \alias{certainty,SNPfieRes-method}
 \alias{SNPfieRes-methods}
 \alias{certainty}
+\alias{diffscores,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{diffscores}
+\alias{maxscores,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{maxscores}
 \alias{numSNPs,SNPfieRes-method}
 \alias{SNPfieRes-methods}
 \alias{numSNPs}
+\alias{plotCallRate,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{plotCallRate}
+\alias{plotScores,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{plotScores}
+\alias{propSNPs,SNPfieRes-method}
+\alias{SNPfieRes-methods}
+\alias{propSNPs}
 \alias{scores,SNPfieRes-method}
 \alias{SNPfieRes-methods}
 \alias{scores}
 \title{SNPfieRes instances}
 \usage{
-\S4method{classification}{SNPfieRes}(object)
+\S4method{classification}{SNPfieRes}(object, minDiff = 0, callRate = 0,
+  inversion = FALSE)
 
 \S4method{certainty}{SNPfieRes}(object)
 
+\S4method{diffscores}{SNPfieRes}(object)
+
+\S4method{maxscores}{SNPfieRes}(object)
+
 \S4method{numSNPs}{SNPfieRes}(object)
+
+\S4method{plotCallRate}{SNPfieRes}(object, callRate = 0.9, ...)
+
+\S4method{plotScores}{SNPfieRes}(object, minDiff = 0.1, ...)
+
+\S4method{propSNPs}{SNPfieRes}(object)
 
 \S4method{scores}{SNPfieRes}(object)
 }
 \arguments{
 \item{object}{\code{SNPfieRes}}
+
+\item{minDiff}{Numeric with the threshold of the minimum difference
+between the top and the second score. Used to filter samples.}
+
+\item{callRate}{Numeric with the threshold of the minimum call rate
+of the samples. Used to filter samples.}
+
+\item{inversion}{Logical. If true, haplotypes classification is adapted
+to return inversion status.}
+
+\item{...}{Further parameters passed to plot function.}
 }
 \value{
 A SNPfieRes instance
@@ -42,7 +79,17 @@ Container with the results of the classification pipeline
 
 \item \code{certainty}: Get classification certainty
 
+\item \code{diffscores}: Get maximum similarity scores
+
+\item \code{maxscores}: Get maximum similarity scores
+
 \item \code{numSNPs}: Get number of SNPs used in computation
+
+\item \code{plotCallRate}: Plot call rate based QC
+
+\item \code{plotScores}: Plot scores based QC
+
+\item \code{propSNPs}: Get proportions of SNPs used in computation
 
 \item \code{scores}: Get similarity scores
 }}
