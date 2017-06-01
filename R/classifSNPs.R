@@ -19,7 +19,7 @@
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
 #' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 #' different haplotypes.
-#' @param mc.cores Numeric with the number of cores used in the computation
+#' @param BPPARAM A \code{BiocParallelParam} instance. Used to parallelize computation
 #' @return List with the results:
 #' \itemize{
 #' \item{scores: Matrix with the simmilarity scores of the individuals}
@@ -32,8 +32,8 @@
 #' c("rs141039449", "rs138092889", "rs138217047")))
 #'
 #' ## Run function using reference of ROIno.8.3
-#' classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3, mc.cores = 1)
-classifSNPs <- function(genos, R2, refs, mc.cores){
+#' classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3)
+classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
 
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))
@@ -43,9 +43,9 @@ classifSNPs <- function(genos, R2, refs, mc.cores){
     numrefs <- nrow(refs[[1]])
 
     # Compute the scores and the probabilities
-    res <-  parallel::mclapply(rownames(genos), function(ind) {
-      computeScore(genos[ind, ], refs = refs, R2 = R2)
-    }, mc.cores = mc.cores)
+    res <-  BiocParallel::bplapply(rownames(genos), function(ind) {
+        computeScore(genos[ind, ], refs = refs, R2 = R2)
+    }, BPPARAM = BPPARAM)
     names(res) <- rownames(genos)
 
     scores <- t(vapply(res, `[[`, numeric(numrefs), "score"))
@@ -53,40 +53,40 @@ classifSNPs <- function(genos, R2, refs, mc.cores){
 
     list(scores = scores, numSNPs = snps)
 
-  }
+}
 
 
 computeScore <- function(geno, refs, R2){
 
-  if (is.null(names(geno))){
-    names(geno) <- names(refs)
-  }
+    if (is.null(names(geno))){
+        names(geno) <- names(refs)
+    }
 
-  goodgenos <- geno != "NN"
+    goodgenos <- geno != "NN"
 
-  numSNPs <- sum(goodgenos)
-  haplos <- rownames(refs[[1]])
-  numhaplos <- length(haplos)
+    numSNPs <- sum(goodgenos)
+    haplos <- rownames(refs[[1]])
+    numhaplos <- length(haplos)
 
-  if(numSNPs == 0){
-    score <- postprob <- rep(0, numhaplos)
-    names(score) <- names(postprob) <- haplos
-    return(list(score = score, numSNPs = numSNPs, prob = postprob))
-  }
+    if(numSNPs == 0){
+        score <- postprob <- rep(0, numhaplos)
+        names(score) <- names(postprob) <- haplos
+        return(list(score = score, numSNPs = numSNPs, prob = postprob))
+    }
 
-  geno <- geno[goodgenos]
-  refs <- refs[goodgenos]
-  R2 <- R2[goodgenos]
-  mat <- t(vapply(names(geno), function(snp) {
-    tryCatch(refs[[snp]][, geno[snp]]*R2[snp], error = function(e) {
-      res <- rep(0, numhaplos)
-      names(res) <- haplos
-      res
-      })
-  }, numeric(numhaplos)))
+    geno <- geno[goodgenos]
+    refs <- refs[goodgenos]
+    R2 <- R2[goodgenos]
 
-  score <- colSums(mat)/sum(R2)
+    geno <- paste0(names(geno), geno)
+    refs <- t(Reduce(cbind, lapply(names(refs), function(x) {
+        colnames(refs[[x]]) <- paste0(x, colnames(refs[[x]]))
+        refs[[x]]
+        })))
+    mat <- data.frame(refs)[geno, ]*matrix(R2, ncol = numhaplos,
+                                  nrow = numSNPs)
+    mat[is.na(mat)] <- 0
+    score <- colSums(mat)/sum(R2)
 
-
-  list(score = score, numSNPs = numSNPs)
+    list(score = score, numSNPs = numSNPs)
 }

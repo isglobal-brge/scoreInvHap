@@ -1,6 +1,6 @@
-#' SNPfier: package to get inversion status of predefined regions.
+#' scoreInvHap: package to get inversion status of predefined regions.
 #'
-#' SNPfier can get the samples' inversion status of known inversions. SNPfier uses SNP data as input
+#' scoreInvHap can get the samples' inversion status of known inversions. scoreInvHap uses SNP data as input
 #' and requires the following information about the inversion: genotype frequencies in the different
 #' inversion groups, R2 between the region SNPs and inversion status, heterozygote genotypes in the
 #' reference, allele frequencies in the reference population and inversion frequencies.
@@ -8,11 +8,11 @@
 #' 17q21.31) and for two additional validated regions.
 #'
 #' @docType package
-#' @name SNPfier
+#' @name scoreInvHap
 #'
+#' @importFrom BiocParallel bplapply bpparam
 #' @importFrom Biostrings complement DNAStringSet
 #' @importFrom GenomicRanges mcols
 #' @importFrom methods as
-#' @importFrom parallel mclapply
 #' @importClassesFrom snpStats SnpMatrix
 NULL

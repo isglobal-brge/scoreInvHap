@@ -5,9 +5,9 @@
 \alias{classifSNPsImpute}
 \title{Get similarity scores and probability}
 \usage{
-classifSNPs(genos, R2, refs, mc.cores)
+classifSNPs(genos, R2, refs, BPPARAM = BiocParallel::bpparam())
 
-classifSNPsImpute(genos, R2, refs, mc.cores = 1)
+classifSNPsImpute(genos, R2, refs, BPPARAM = BiocParallel::bpparam())
 }
 \arguments{
 \item{genos}{Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}}
@@ -17,7 +17,7 @@ classifSNPsImpute(genos, R2, refs, mc.cores = 1)
 \item{refs}{List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 different haplotypes.}
 
-\item{mc.cores}{Numeric with the number of cores used in the computation}
+\item{BPPARAM}{A \code{BiocParallelParam} instance. Used to parallelize computation}
 }
 \value{
 List with the results:
@@ -48,5 +48,5 @@ nrow = 3, dimnames = list(letters[1:3],
 c("rs141039449", "rs138092889", "rs138217047")))
 
 ## Run function using reference of ROIno.8.3
-classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3, mc.cores = 1)
+classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3)
 }

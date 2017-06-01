@@ -10,11 +10,11 @@
 #' \item{certainty: Vector with the certainty of the most probable classification}
 #' }
 getInvStatus <- function(scores) {
-  scores[scores == Inf] <- 1
-  class <- factor(colnames(scores)[max.col(scores)], levels = colnames(scores))
-  names(class) <- rownames(scores)
-  posterior <- scores/rowSums(scores)
-  certainty <- apply(posterior, 1, max, na.rm = TRUE)
-  certainty[certainty == -Inf] <- 0
-  return(list(class = class, certainty = certainty))
+    scores[scores == Inf] <- 1
+    class <- factor(colnames(scores)[max.col(scores)], levels = colnames(scores))
+    names(class) <- rownames(scores)
+    posterior <- scores/rowSums(scores)
+    certainty <- apply(posterior, 1, max, na.rm = TRUE)
+    certainty[certainty == -Inf] <- 0
+    return(list(class = class, certainty = certainty))
 }

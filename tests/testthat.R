@@ -1,4 +1,4 @@
 library(testthat)
-library(snpfier)
+library(scoreInvHap)
 
-test_check("snpfier")
+test_check("scoreInvHap")
