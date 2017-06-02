@@ -44,8 +44,8 @@ of imputed genotypes.
 \examples{
 ## Simulate a table of genotypes from ROIno.8.3
 geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
-nrow = 3, dimnames = list(letters[1:3],
-c("rs141039449", "rs138092889", "rs138217047")))
+    nrow = 3, dimnames = list(letters[1:3],
+    c("rs141039449", "rs138092889", "rs138217047")))
 
 ## Run function using reference of ROIno.8.3
 classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3)

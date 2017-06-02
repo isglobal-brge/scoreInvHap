@@ -17,9 +17,9 @@
 #' @return A \code{scoreInvHap} object
 #' @examples
 #' if(require(VariantAnnotation)){
-#'   vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
-#'   res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
-#'   Refs$HsInv0286)
+#'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
+#'     res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+#'         Refs$HsInv0286)
 #' }
 scoreInvHap <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
                         imputed = FALSE,
@@ -44,7 +44,7 @@ scoreInvHap <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
             SNPlist <- SNPlist[commonSNPs, ]
 
             ## Filter SNPs with bad imputation quality
-            SNPlist <- SNPlist[info(SNPlist)$R2 > 0.4, ]
+            SNPlist <- SNPlist[VariantAnnotation::info(SNPlist)$R2 > 0.4, ]
 
             # Create alleleTable
             map <- prepareMap(SNPlist)
@@ -73,8 +73,8 @@ scoreInvHap <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
             vcf <- SNPlist
             SNPlist <- VariantAnnotation::genotypeToSnpMatrix(vcf)
 
-            SNPlist$map$position <- start(rowRanges(vcf))
-            SNPlist$map$chromosome <- as.character(seqnames(rowRanges(vcf)))
+            SNPlist$map$position <- GenomicRanges::start(SummarizedExperiment::rowRanges(vcf))
+            SNPlist$map$chromosome <- as.character(GenomicRanges::seqnames(SummarizedExperiment::rowRanges(vcf)))
             SNPlist$genotypes <- SNPlist$genotypes[, !SNPlist$map$ignore]
             SNPlist$map <- SNPlist$map[!SNPlist$map$ignore, ]
             SNPlist$map$allele.2 <- unlist(SNPlist$map$allele.2)
@@ -132,7 +132,14 @@ scoreInvHap <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
     return(res)
 }
 
-
+#' Adapt references to imputed data
+#'
+#' @description Internal
+#'
+#' @param Refs List with the allele frequencies
+#' @param alleletable Data.frame with the alleles per SNP (from getAlleleTable)
+#' @param haploid Logical. If TRUE, modify references for haploid samples
+#' @return List with the same values than Refs but adapted to imputation data
 adaptRefs <- function(Refs, alleletable, haploid = FALSE){
     rb <- lapply(rownames(alleletable), function(snp) {
         als <- unlist(alleletable[snp, 1:3])
@@ -155,8 +162,15 @@ adaptRefs <- function(Refs, alleletable, haploid = FALSE){
     rb
 }
 
+#' Modify feature data from VCF
+#'
+#' @description Internal. Modify feature data from VCF to comply with
+#' scoreInvHap requirements.
+#'
+#' @param vcf \code{VCF} object
+#' @return Data.frame with the feature data
 prepareMap <- function(vcf){
-    map <- GenomicRanges::mcols(rowRanges(vcf))
+    map <- GenomicRanges::mcols(SummarizedExperiment::rowRanges(vcf))
     rownames(map) <- rownames(vcf)
     cnmap <- colnames(map)
     cnmap[cnmap == "REF"] <- "allele.1"

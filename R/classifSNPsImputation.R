@@ -10,19 +10,12 @@ classifSNPsImpute <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()
     numrefs <- nrow(refs[[1]])
 
     # Compute the scores and the probabilities
-    scores <- computeScoreImpute(genos, refs = refs, R2 = R2, BPPARAM = BPPARAM)
+    score_list <- BiocParallel::bplapply(rownames(genos), function(snp)
+        genos[snp, , ] %*% t(refs[[snp]])*R2[snp], BPPARAM = BPPARAM)
+    scores <- Reduce(`+`, score_list)
+    scores <- scores/sum(R2[rownames(genos)])
     snps <- rep(length(common), ncol(genos))
     names(snps) <- names(scores)
 
     list(scores = scores, numSNPs = snps)
-}
-
-
-computeScoreImpute <- function(geno, refs, R2, BPPARAM = BiocParallel::bpparam()){
-
-    score_list <- BiocParallel::bplapply(rownames(geno), function(snp)
-        geno[snp, , ] %*% t(refs[[snp]])*R2[snp], BPPARAM = BPPARAM)
-    mat <- Reduce(`+`, score_list)
-    mat <- mat/sum(R2[rownames(geno)])
-    mat
 }

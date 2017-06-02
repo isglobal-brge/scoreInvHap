@@ -28,8 +28,8 @@
 #' @examples
 #' ## Simulate a table of genotypes from ROIno.8.3
 #' geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
-#' nrow = 3, dimnames = list(letters[1:3],
-#' c("rs141039449", "rs138092889", "rs138217047")))
+#'     nrow = 3, dimnames = list(letters[1:3],
+#'     c("rs141039449", "rs138092889", "rs138217047")))
 #'
 #' ## Run function using reference of ROIno.8.3
 #' classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3)
@@ -42,7 +42,7 @@ classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
     refs <- refs[common]
     numrefs <- nrow(refs[[1]])
 
-    # Compute the scores and the probabilities
+    # Compute the scores
     res <-  BiocParallel::bplapply(rownames(genos), function(ind) {
         computeScore(genos[ind, ], refs = refs, R2 = R2)
     }, BPPARAM = BPPARAM)
@@ -55,19 +55,35 @@ classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
 
 }
 
-
+#' Compute all similarity scores for a sample
+#'
+#' @description Internal
+#'
+#' @param geno Vector with the sample genotypes. It is the result of
+#' \code{getGenotypesTable}
+#' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
+#' different haplotypes.
+#' @param R2 Vector with the R2 between the SNPs and the inversion status
+#' @return List with the results:
+#' \itemize{
+#' \item{scores: Vector with the simmilarity scores of the sample}
+#' \item{numSNPs: Numeric with the number of SNPs used in the computation}
+#' }
 computeScore <- function(geno, refs, R2){
 
+    ## Check if geno has names
     if (is.null(names(geno))){
         names(geno) <- names(refs)
     }
 
+    ## Filter SNPs without a calling
     goodgenos <- geno != "NN"
 
     numSNPs <- sum(goodgenos)
     haplos <- rownames(refs[[1]])
     numhaplos <- length(haplos)
 
+    ## If any SNP has a calling, return 0 for all scores
     if(numSNPs == 0){
         score <- postprob <- rep(0, numhaplos)
         names(score) <- names(postprob) <- haplos
@@ -78,11 +94,14 @@ computeScore <- function(geno, refs, R2){
     refs <- refs[goodgenos]
     R2 <- R2[goodgenos]
 
+    ## Modify geno and refs to allow vectorized computation
     geno <- paste0(names(geno), geno)
     refs <- t(Reduce(cbind, lapply(names(refs), function(x) {
         colnames(refs[[x]]) <- paste0(x, colnames(refs[[x]]))
         refs[[x]]
         })))
+
+    ## Get the similarity scores
     mat <- data.frame(refs)[geno, ]*matrix(R2, ncol = numhaplos,
                                   nrow = numSNPs)
     mat[is.na(mat)] <- 0
