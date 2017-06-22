@@ -12,7 +12,10 @@
 #'
 #' @importFrom BiocParallel bplapply bpparam
 #' @importFrom Biostrings complement DNAStringSet
-#' @importFrom GenomicRanges mcols
-#' @importFrom methods as
+#' @importFrom GenomicRanges mcols start
+#' @importFrom graphics abline hist plot
+#' @importFrom methods as is new
+#' @importFrom SummarizedExperiment rowRanges
+#' @importFrom VariantAnnotation info
 #' @importClassesFrom snpStats SnpMatrix
 NULL

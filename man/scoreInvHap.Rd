@@ -45,8 +45,8 @@ SNPs data in a plink or a VCF format and compute the inversion prediction.
 }
 \examples{
 if(require(VariantAnnotation)){
-  vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
-  res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
-  Refs$HsInv0286)
+    vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
+    res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+        Refs$HsInv0286)
 }
 }

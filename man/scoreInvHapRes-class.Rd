@@ -108,19 +108,19 @@ Container with the results of the classification pipeline
 
 \examples{
 if(require(VariantAnnotation)){
-  vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
+    vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 
-  ## Create scoreInvHapRes class from pipeline
-  res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
-  Refs$HsInv0286)
+    ## Create scoreInvHapRes class from pipeline
+    res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+    Refs$HsInv0286)
 
-  ## Print object
-  res
+    ## Print object
+    res
 
-  ## Get haplotype classification
-  classification(res)
+    ## Get haplotype classification
+    classification(res)
 
-  ## Get similiraty scores
-  scores(res)
+    ## Get similiraty scores
+    scores(res)
 }
 }

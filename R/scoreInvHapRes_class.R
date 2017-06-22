@@ -14,20 +14,20 @@
 #' @return A scoreInvHapRes instance
 #' @examples
 #' if(require(VariantAnnotation)){
-#'   vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
+#'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 #'
-#'   ## Create scoreInvHapRes class from pipeline
-#'   res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
-#'   Refs$HsInv0286)
+#'     ## Create scoreInvHapRes class from pipeline
+#'     res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
+#'     Refs$HsInv0286)
 #'
-#'   ## Print object
-#'   res
+#'     ## Print object
+#'     res
 #'
-#'   ## Get haplotype classification
-#'   classification(res)
+#'     ## Get haplotype classification
+#'     classification(res)
 #'
-#'   ## Get similiraty scores
-#'   scores(res)
+#'     ## Get similiraty scores
+#'     scores(res)
 #' }
 setClass (
     Class = "scoreInvHapRes",
@@ -148,9 +148,9 @@ setMethod(
     signature = "scoreInvHapRes",
     definition = function(object, callRate = 0.9, ...) {
 
-        hist(propSNPs(object), breaks = seq(0, 1, 0.05), xlim = c(0, 1),
+        graphics::hist(propSNPs(object), breaks = seq(0, 1, 0.05), xlim = c(0, 1),
              xlab = "SNPs proportion", ...)
-        abline(v = callRate)
+        graphics::abline(v = callRate)
     }
 )
 
@@ -166,9 +166,9 @@ setMethod(
     signature = "scoreInvHapRes",
     definition = function(object, minDiff = 0.1, ...) {
 
-        plot(maxscores(object), diffscores(object), xlim = c(0, 1),
+        graphics::plot(maxscores(object), diffscores(object), xlim = c(0, 1),
              xlab = "Max Scores", ylab = "Diff Score", ...)
-        abline(h = minDiff)
+        graphics::abline(h = minDiff)
     }
 )
 

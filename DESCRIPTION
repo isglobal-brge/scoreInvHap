@@ -1,6 +1,6 @@
 Package: scoreInvHap
 Title: Get inversion status in predefined regions
-Version: 0.99.15
+Version: 0.99.16
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
   person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
 Description: scoreInvHap can get the samples' inversion status of known inversions. SNPfier uses SNP data as
@@ -19,7 +19,9 @@ Imports: Biostrings,
     snpStats,
     VariantAnnotation,
     GenomicRanges,
-    BiocParallel
+    BiocParallel,
+    graphics,
+    SummarizedExperiment
 Suggests: testthat,
     knitr,
     BiocStyle,
