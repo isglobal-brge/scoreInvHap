@@ -9,7 +9,9 @@
 library(GenomicRanges)
 library(VariantAnnotation)
 library(parallel)
-source("/home/cruiz/InversionSequencing/InversionNGSutils.R")
+
+## Load functions from extraFunctions file
+source("./inst/scripts/extraFunctions.R")
 
 # Load ancestry
 load("/SYNCRW10125/DATASETS/STUDY/1000GENOME/Samples_Pop1GK.Rdata")
@@ -28,15 +30,19 @@ ranges <- c(granges(ranges),
 names(ranges)[3:4] <- names(invFestGenotypescomplex)
 
 
+
 # Load SNPs  ####
 #'#################################################################################
 
 selinvs <- names(ranges)
 
+## Select samples used to create references
 EUR <- rownames(samp_pop)[samp_pop$superpop == "EUR"]
 
 
 # Get region SNPs
+
+# Set vcffile parameter to path to vcf file with the genotypes
 inversionSNPs <- list(getVCFmatrix(ranges[1], EUR, minmaf = 0.05),
                       getVCFmatrix(ranges[2], EUR, minmaf = 0.05),
                       getVCFmatrix(ranges[3], EUR, minmaf = 0.01),
@@ -65,7 +71,7 @@ lapply(selinvs[3:4], function(x){
 }))
 names(SNPsR2) <- selinvs
 
-# Compute allele frequency for the different populations
+# Compute allele frequency for the different haplotypes
 Refs <- c(lapply(selinvs[1:2], function(x)
   computeRefs(invsGeno[[x]], inversionSNPs[[x]]$genotypes,
               inversionSNPs[[x]]$map)),
@@ -74,8 +80,8 @@ Refs <- c(lapply(selinvs[1:2], function(x)
                 inversionSNPs[[x]]$map)))
 names(Refs) <- selinvs
 
-## Create a character vector with the heterozygote form in 1000Genomes to ensure compatibility with
-## other arrays
+## Create a character vector with the heterozygote form in 1000Genomes to ensure
+## compatibility with other arrays
 hetRefs <- lapply(selinvs, function(x){
   map <- inversionSNPs[[x]]$map
   rownames(map) <- map[,1]
@@ -88,4 +94,4 @@ hetRefs <- lapply(selinvs, function(x){
 names(hetRefs) <- selinvs
 
 save(hetRefs, Refs, SNPsR2,
-     file = "/DATA/DATAW5/Carlos/Inversions/SNPfierTesting/newSNPfierdata.Rdata")
+     file = "./newSNPfierdata.Rdata")
