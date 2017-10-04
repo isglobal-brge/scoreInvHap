@@ -14,17 +14,8 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Imports: Biostrings,
-    methods,
-    snpStats,
-    VariantAnnotation,
-    GenomicRanges,
-    BiocParallel,
-    graphics,
-    SummarizedExperiment
-Suggests: testthat,
-    knitr,
-    BiocStyle,
-    rmarkdown
+Imports: Biostrings, methods, snpStats, VariantAnnotation,
+        GenomicRanges, BiocParallel, graphics, SummarizedExperiment
+Suggests: testthat, knitr, BiocStyle, rmarkdown
 VignetteBuilder: knitr
 biocViews: SNP, Genetics, GenomicVariation
