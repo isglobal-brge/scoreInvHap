@@ -13,6 +13,9 @@ getGenotypesTable <- function(geno, allele){
     geno[is.na(geno)] <- 4
     geno <- vapply(1:ncol(geno), function(x) unlist(allele[x, geno[,x], drop = TRUE]),
                    character(nrow(geno)))
+    if (is.null(dim(geno))){
+        geno <- matrix(geno, nrow = 1)
+    }
     colnames(geno) <- rownames(allele)
     rownames(geno) <- names
     geno
