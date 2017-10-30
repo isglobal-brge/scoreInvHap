@@ -1,6 +1,6 @@
 Package: scoreInvHap
 Title: Get inversion status in predefined regions
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
   person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
 Description: scoreInvHap can get the samples' inversion status of known inversions. scoreInvHap uses SNP data as
