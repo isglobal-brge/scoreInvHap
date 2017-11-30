@@ -31,8 +31,8 @@
 #'     nrow = 3, dimnames = list(letters[1:3],
 #'     c("rs141039449", "rs138092889", "rs138217047")))
 #'
-#' ## Run function using reference of ROIno.8.3
-#' classifSNPs(geno, SNPsR2$ROIno.8.3, Refs$ROIno.8.3)
+#' ## Run function using reference of inv8p23.1
+#' classifSNPs(geno, SNPsR2$inv8p23.1, Refs$inv8p23.1)
 classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
 
     # Select SNPs present in R2, references and genotypes

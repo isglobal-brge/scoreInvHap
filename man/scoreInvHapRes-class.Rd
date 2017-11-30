@@ -111,8 +111,8 @@ if(require(VariantAnnotation)){
     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 
     ## Create scoreInvHapRes class from pipeline
-    res <- scoreInvHap(vcf, SNPsR2$HsInv0286, hetRefs = hetRefs$HsInv0286,
-    Refs$HsInv0286)
+    res <- scoreInvHap(vcf, SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
+    Refs$inv7p11.2)
 
     ## Print object
     res

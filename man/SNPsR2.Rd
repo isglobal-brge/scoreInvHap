@@ -4,8 +4,8 @@
 \name{SNPsR2}
 \alias{SNPsR2}
 \title{R2 between the SNPs and the inversion status}
-\format{List of numeric vectors for 6 inversions (ROIno.8.3, ROIno.17.16, HsInv0286 and
-HsInv0396).}
+\format{List of numeric vectors for 6 inversions (inv8p23.1, inv17q21.31, inv7p11.2
+and invXq13.2).}
 \usage{
 SNPsR2
 }
