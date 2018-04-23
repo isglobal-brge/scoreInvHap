@@ -1,6 +1,6 @@
 #' @rdname classifSNPs
 #' @export
-classifSNPsImpute <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
+classifSNPsImpute <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialParam()){
 
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), rownames(genos)))

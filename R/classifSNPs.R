@@ -33,7 +33,7 @@
 #'
 #' ## Run function using reference of inv8p23.1
 #' classifSNPs(geno, SNPsR2$inv8p23.1, Refs$inv8p23.1)
-classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::bpparam()){
+classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialParam()){
 
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))

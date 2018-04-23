@@ -23,7 +23,7 @@
 #' }
 scoreInvHap <- function(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0,
                         imputed = FALSE,
-                        BPPARAM = BiocParallel::bpparam(), verbose = FALSE){
+                        BPPARAM = BiocParallel::SerialParam(), verbose = FALSE){
     if (is(SNPlist, "VCF")){
         dupSNPs <- rownames(SNPlist)[duplicated(rownames(SNPlist))]
         SNPlist <- SNPlist[!rownames(SNPlist) %in% dupSNPs, ]
