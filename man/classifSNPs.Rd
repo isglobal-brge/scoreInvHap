@@ -5,9 +5,9 @@
 \alias{classifSNPsImpute}
 \title{Get similarity scores and probability}
 \usage{
-classifSNPs(genos, R2, refs, BPPARAM = BiocParallel::bpparam())
+classifSNPs(genos, R2, refs, BPPARAM = BiocParallel::SerialParam())
 
-classifSNPsImpute(genos, R2, refs, BPPARAM = BiocParallel::bpparam())
+classifSNPsImpute(genos, R2, refs, BPPARAM = BiocParallel::SerialParam())
 }
 \arguments{
 \item{genos}{Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}}

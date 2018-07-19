@@ -7,12 +7,15 @@
 \alias{scoreInvHap}
 \title{scoreInvHap: package to get inversion status of predefined regions.}
 \usage{
-scoreInvHap(SNPlist, SNPsR2, hetRefs, Refs, R2 = 0, imputed = FALSE,
-  BPPARAM = BiocParallel::bpparam(), verbose = FALSE)
+scoreInvHap(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
+  imputed = FALSE, BPPARAM = BiocParallel::SerialParam(), verbose = FALSE)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 with the annotation)}
+
+\item{inv}{Character with the name of the inversion to genotype. Available names
+are: inv8p23.1, inv17q21.31, inv7p11.2 and invXq13.2.}
 
 \item{SNPsR2}{Vector with the R2 of the SNPs of the region}
 
@@ -46,7 +49,7 @@ SNPs data in a plink or a VCF format and compute the inversion prediction.
 \examples{
 if(require(VariantAnnotation)){
     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
-    res <- scoreInvHap(vcf, SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
-        Refs$inv7p11.2)
+    res <- scoreInvHap(vcf, SNPsR2 = SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
+        Refs = Refs$inv7p11.2)
 }
 }
