@@ -5,6 +5,5 @@
 #' of 1000 Genomes Phase 3 data. Real inversion status have been estimated using
 #' invClust.
 #'
-#' @format List of numeric vectors for four inversions (inv8p23.1, inv17q21.31, inv7p11.2
-#' and invXq13.2).
+#' @format List of numeric vectors for 21 inversions
 "SNPsR2"

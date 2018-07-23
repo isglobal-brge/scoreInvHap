@@ -17,8 +17,7 @@
 #'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 #'
 #'     ## Create scoreInvHapRes class from pipeline
-#'     res <- scoreInvHap(vcf, SNPsR2 = SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
-#'     Refs = Refs$inv7p11.2)
+#'     res <- scoreInvHap(vcf, inv = inv7_005)
 #'
 #'     ## Print object
 #'     res

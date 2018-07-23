@@ -6,8 +6,7 @@
 #' @export
 #' @param SNPlist List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 #' with the annotation)
-#' @param inv Character with the name of the inversion to genotype. Available names
-#' are: inv8p23.1, inv17q21.31, inv7p11.2 and invXq13.2.
+#' @param inv Character with the name of the inversion to genotype.
 #' @param SNPsR2 Vector with the R2 of the SNPs of the region
 #' @param hetRefs Vector with the heterozygote form of the SNP in the inversion
 #' @param Refs List with the allele frequencies in the references
@@ -20,8 +19,7 @@
 #' @examples
 #' if(require(VariantAnnotation)){
 #'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
-#'     res <- scoreInvHap(vcf, SNPsR2 = SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
-#'         Refs = Refs$inv7p11.2)
+#'     res <- scoreInvHap(vcf, inv = inv7_005)
 #' }
 scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
                         imputed = FALSE,
