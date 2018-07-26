@@ -35,7 +35,7 @@
 \title{scoreInvHapRes instances}
 \usage{
 \S4method{classification}{scoreInvHapRes}(object, minDiff = 0, callRate = 0,
-  inversion = FALSE)
+  inversion = TRUE)
 
 \S4method{certainty}{scoreInvHapRes}(object)
 
@@ -63,7 +63,7 @@ between the top and the second score. Used to filter samples.}
 of the samples. Used to filter samples.}
 
 \item{inversion}{Logical. If true, haplotypes classification is adapted
-to return inversion status.}
+to return inversion status. (Default: TRUE)}
 
 \item{...}{Further parameters passed to plot function.}
 }
@@ -111,8 +111,7 @@ if(require(VariantAnnotation)){
     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 
     ## Create scoreInvHapRes class from pipeline
-    res <- scoreInvHap(vcf, SNPsR2 = SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2,
-    Refs = Refs$inv7p11.2)
+    res <- scoreInvHap(vcf, inv = "inv7_005")
 
     ## Print object
     res

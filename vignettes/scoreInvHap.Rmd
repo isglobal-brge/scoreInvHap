@@ -1,10 +1,19 @@
 ---
-title: "Call inversions with scoreInvHap"
-subtitle: "Carlos Ruiz, Juan R. Gonzalez"
-author: |
-  | Institute for Global Health (ISGlobal), Barcelona, Spain
-  | Bioinformatics Research Group in Epidemiolgy (BRGE)
-  | (<http://www.creal.cat/brge.htm>)
+title: "Inversion genotyping with scoreInvHap"
+author: 
+- name: Carlos Ruiz-Arenas
+  affiliation: 
+  - &isglobal ISGlobal, Centre for Research in Environmental Epidemiology (CREAL)
+  - &brge Bioinformatics Research Group in Epidemiolgy (BRGE)
+- name: Alejandro Cáceres
+  affiliation: 
+  - *isglobal
+  - *brge
+- name: Juan R. Gonzalez
+  affiliation: 
+  - *isglobal
+  - *brge
+  email: juanr.gonzalez@isglobal.org
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('scoreInvHap')`"
 output: 
@@ -12,8 +21,9 @@ output:
     number_sections: true
     toc: yes
     fig_caption: yes
+    toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Call haplotype inversions with scoreInvHap}
+  %\VignetteIndexEntry{Inversion genotyping with scoreInvHap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,82 +35,31 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 # Introduction
 
-`r Rpackage("scoreInvHap")` infers haplotype inversion's status of a set of samples using SNP data. This method computes a similarity score between the sample SNPs in your cohort and the reference haplotypes. Samples are classified into the haplotype having the highest score. There are other approaches to perform this task such us [inveRsion](https://bioconductor.org/packages/release/bioc/html/inveRsion.html), [invClust](http://nar.oxfordjournals.org/content/early/2015/02/05/nar.gkv073.full) or [PFIDO](https://github.com/MaxSalm/pfido) that are based on multivariate clustering procedures. However, these approaches may have several limitation that are addressed by using `r Rpackage("scoreInvHap")`. These limitations include:
+`r Rpackage("scoreInvHap")` genotypes inversions using SNP data. This method computes a similarity score between the available SNPs of an individual and experimental references for the three inversion-genotypes; NN: non-inverted homozygous, NI: inverted heterozygous and II: inverted homozygous. Individuals are classified into the inversion-genotypes with the highest score. There are other approaches to genotype inversions from SNP data: [inveRsion](https://bioconductor.org/packages/release/bioc/html/inveRsion.html), [invClust](http://nar.oxfordjournals.org/content/early/2015/02/05/nar.gkv073.full) or [PFIDO](https://github.com/MaxSalm/pfido). However, these approaches have limitations including:
 
-* __analizing limited or moderate number of samples__. Clustering methods require to have large number of samples to perform clustering to properly discriminate haplotype inversion status. In particular, calling of a single sample cannot be performed without having a reference data. 
-* __analyzing data from different SNP arrays__.  `r Rpackage("PFIDO")` and `r Rpackage("invClust")` may provide different answers depending on which array is used (i.e., Illumina 1M, Affy 6.0, ...) since dfferent coverage may lead to perform the calling using different number of SNPs of a given inverted region. 
-* __combining calling from different SNP arrrays__. `r Rpackage("invClust")` and `r Rpackage("PFIDO")` clasify each individual as homozygous normal, heterozygous or homozygous inverted depending on cluster frequency. In those cases where inversion with haplotype frequency is close to 50%, both methods may have problems to determine which is the reference haplotype. Performing calling in different cohort of samples may lead to wrong results when combining data from different studies.
+* __they are based in population sample inferences__. When a new individual is included in the study the whole population sample needs to be reanalyzed. As they depend on dimensionality reduction methods, they are slow in the analysis of several individuals.  
 
-`r Rpackage("scoreInvHap")` overcomes these difficulties by using a set of reference genotypes that has been used to properly characterize the inversion of interest. Genomic information such as linkage desequillibrium (R^2^) and hetgerozygous sequence has been determined for each of the region of interest (ROI) and are used to create the score that discriminate the inversion status.  
+* __they can only handle limited number of samples__. They need large samples sizes for accurate inferences. 
+* __They are highly sensitive to SNP array densities__.  Their accuracy depends on how clear the population sample can be partitioned, which depends on the amount and quality of informative SNPs. 
+ 
+* __They need external information to label the inversion-genotype clusters__. External validation of the clustering is performed at the end of the inference. If there are more than three clusters, it is not clear how which inversion genotype should be assigned to the clusters.  
+
+`r Rpackage("scoreInvHap")` overcomes these difficulties by using a set of reference genotypes from the inversion of interest. The methods is a supervised classifier  that genotypes each individual according to their SNP similarities to the reference genotypes across the inverted segment. The classifier in particular uses the linkage desequillibrium (R^2^) between the SNPs and the inversion genoptypes, and the SNPs of each reference inversion-genotypes. 
 
 # Inversion characterization
 
-The package can be loaded by typing:
+The package is loaded as usual
 
 ```{r, load_package}
 library(scoreInvHap)
 ```
 
-Calling procedure requires three objects that characterize the inversion of interest: 
-
-- the reference genotypes,
-- the SNPs R^2^, and 
-- the heterozygous reference. 
-
-`r Rpackage("scoreInvHap")` already contains these required objects of four inversions. Two of them are well known and characterized genomic inversions: 8p23 and 17q21.31. We have also included two inversions that are described in [invFEST database](http://invfestdb.uab.cat/): 7p11.2 and Xq13.2. These objects have been created using VCF phase 3 data of [1000 Genomes Project](http://www.internationalgenome.org/). The code used to generate them can be found in the `/inst/scripts` folder of the package. This code can be modified to create the required files of any other inversion of interest. Required information of other inversions will be incorporated in the future when checked in our group or described in the literature. 
-
-## Reference genotypes
-
-As previously stated, the method uses the frequency of the SNP genotypes of each SNP located into the inversion region. This information is provided for he different haplotype populations. This information is encoded in an object called `Refs` that can be loaded by typing:
-
-```{r, load data}
-data("Refs")
-names(Refs)
-```
-
-Each element of this list is a reference for one of the four available inversions. For instance, the reference of inversion inv8p23.1 can be obtained by: 
-
-```{r, Refs}
-ref <- Refs$inv8p23.1
-class(ref)
-ref[1:2]
-```
-
-This object is a list of matrices containing the frequency of each genotype (columns) in each inversion genotype (rows). Each component is named with the SNP id contained in the ROI. Notice that the alleles of the heteryzogous genotypes are alphabetically ordered.
-
-## SNPs R^2^ with inversion
-
-The second object required is a vector containing the R^2^ between the inversion status and the SNPs genotypes. The SNPs with higher R^2^ will have more influence when computing the similarity score. We have formatted this object as a numeric vector, named with the SNPs ids. This information is provided in the object called `SNPsR2`. This is a list that contains the R^2^ of the four available inversions. For instance, this information for the inversion inv8p23.1 can be get by:
-
-```{r, SNPsR2}
-data("SNPsR2")
-names(SNPsR2)
-R2s <- SNPsR2$inv8p23.1
-head(R2s)
-```
-
-
-## Heterozygous reference
-
-The last required information is the heterozygous genotypes of the SNPs included in the references. This information is used to ensure that input SNPs have the same coded alleles than those used in the reference. This information can be retrieve from the object called `hetRefs` that can be inspect by typing:
-
-```{r, hetRefs}
-data("hetRefs")
-names(hetRefs)
-hRefs <- hetRefs$inv8p23.1
-head(hRefs)
-```
-
-In that case, `hRefs` is a character vector contaning the heterozygous genotypes of the SNPs used as references in the ROI. It should be noticed that, in the heterozygous genotype, the alleles MUST BE ordered ALPHABETICALLY. 
-
-# Running scoreInvHap: calling inversions
-
-`r Rpackage("scoreInvHap")` deals with data either in a `SNPMatrix` or as Bioconductor `VCF` class. In the case of `SNPMatrix`, a list with two elements is required:
+`r Rpackage("scoreInvHap")` takes as input SNP data formated in either `SNPMatrix` or `VCF` Bioconductor’s objects. In the case of having data in `SNPMatrix` format, a list with two elements is required:
 
 * genotypes: a SNPMatrix with individuals in rows and SNPs in columns
 * map: a data.frame with the SNPs annotation. It *must* contain the columns *allele.1* and *allele.2* with the alleles of the SNPs. 
 
-We can load our data from a ped file or from plink binary format (.bed, .bim) to a `SNPMatrix` using `r Biocpkg("snpStats")`:
+If data is originally available in PLINK files (.bed, .bim), we can use the functions of  `r Biocpkg("snpStats")` to load the data as `SNPMatrix` object 
 
 ```{r, eval=FALSE}
 library(snpStats)
@@ -113,9 +72,9 @@ snps <- read.pedfile("example.ped", snps = "example.map")
 ```
 
 
-In both cases, snps is a list containing the elements genotypes and map. This object can be passed to `r Rpackage("scoreInvHap")` functions. 
+In both cases, data is readily formatted for `r Rpackage("scoreInvHap")`. 
 
-We can load a vcf file into a `VCF` object using the `r Biocpkg("VariantAnnotation")`. We have included a small vcf in `r Rpackage("scoreInvHap")` package to illustrate how to deal with this data. This file contains a subset of SNPs of 30 European individuals belonging to the 1000 Genomes project. All these SNPs are located at the region 7p11.2. This vcf file contains imputed data. We can load the vcf with the following code:
+If data is available in a variant call format (.vcf) file, we can load it in R into a `VCF` object, using the `r Biocpkg("VariantAnnotation")` package. `r Rpackage("scoreInvHap")` includes a small vcf in `r Rpackage("scoreInvHap")` as a demo. This file contains genotyped and imputed SNPs within inversion 7p11.2 for 30 European individuals from the 1000 Genomes project. We can load the vcf as follows
 
 ```{r, Load SNPs, message=FALSE}
 library(VariantAnnotation)
@@ -124,22 +83,21 @@ vcf <- readVcf(vcf_file, "hg19")
 vcf
 ```
 
-We can observe that the object `vcf` contains 380 SNPs and 30 samples. Now we are ready to classify the samples with regard to the inversion inv7p11.2 by using the function `scoreInvHap`. This function requires four pieces of information:
+The object `vcf` contains 380 SNPs and 30 individuals. Now, we illustrate how to perform the inversion genotyping of inv7p11.2 for these data. The inversion calling requires two pieces of information:
 
 - sample genotypes and their annotation (argument `SNPlist`),
-- the list of matrices with the frequency of each genotypes in each inversion population (argument `Refs`),
-- the numeric vector with the SNPs R^2^ (argument `SNPsR2`), and
-- the vector with the heterozygous genotypes of the SNPs (argument `hetRefs`). 
+- name of the inversion
 
-The inv7p11.2 inversion status of the 30 samples from 1000 genomes is obtained by:  
+Currently, there are 21 inversion references included in `r Rpackage("scoreInvHap")`. We included a table with their coordinates and scoreInvHap labels at the end of this document. 
+
+inv7p11.2 is labeled as `inv7_005` in `r Rpackage("scoreInvHap")`. We then obtain the  inversion genotypes for the 30 individuals in our dataset as follows  
 
 ```{r, classify}
-res <- scoreInvHap(SNPlist = vcf, SNPsR2 = SNPsR2$inv7p11.2, 
-                          hetRefs = hetRefs$inv7p11.2, Refs = Refs$inv7p11.2)
+res <- scoreInvHap(SNPlist = vcf, inv = "inv7_005")
 res
 ```
 
-The results of `scoreInvHap` are encapsulated in a object of class `scoreInvHapes`. This object contains the classification of the samples and the simmilarity scores. We can obtain this data with the following getters: 
+The results of `scoreInvHap` are encapsulated in a object of class `scoreInvHapes`. This object contains the classification of the individuals into the inversion-genotypes, as well as the similarity scores. We can retrieve results with the `classification` and the  `scores`  functions 
 
 ```{r, scoreInvHap results}
 # Get classification
@@ -148,9 +106,11 @@ head(classification(res))
 head(scores(res))
 ```
 
+Inversion genotypes is returned as a factor, which includes the individual names present in the `snpMatrix` or `VCF`. Thus, inversion classification can be readily used in down-stream association tests. 
+
 ## Quality control
 
-We can retrieve other values that are useful to evaluate the quality of the classification. For each sample, we can obtain its highest similarity score and the difference between the highest similarity score and the second highest:
+We can retrieve other values that are useful to evaluate the quality of the inference. For each individual, we can obtain the highest similarity score and the difference between the highest similarity score and the second highest:
 
 ```{r, scoreInvHap scores}
 # Get max score
@@ -159,15 +119,15 @@ head(maxscores(res))
 head(diffscores(res))
 ```
 
-A classification is good when the highest score is close to 1 and the other scores are small. This means that the samples SNPs are almost the same than in one of the reference haplotypes and that they are different to the other references. We use the difference between the highest score and the second highest score as a measure of how different is the highest score from the rest. We can have a visual evaluation of these quality parameters with the function `plotScores`:
+Classification is good when the highest score is close to 1 and the other scores are small. This means that the SNPs in the individual are almost identical to one of the reference genotypes and  different from the rest. We use the difference between the highest score and the second highest score as quality measure. We can have a visual evaluation of the quality parameters with the function `plotScores`:
 
 ```{r}
 plotScores(res, pch = 16, main = "QC based on scores")
 ```
 
-The horizontal line of the plot is a suggestion of the minimum difference between the highest and the second score that we accept. By default, this value is set to 0.1 but it can be changed with the parameter `minDiff`. This default value equals to considering that the sample SNPs are at least 10% more similar to the top reference than to the other references. `plotScores` relies on the base plot function, so we can pass additional parameters to customize the plot. 
+The horizontal line is a threshold for quality, set to 0.1 but can be changed in the parameter `minDiff` in the function `scoreInvHap`. This default value considers that the SNPs  of the individual are at least 10% more similar to the selected reference than to second one. `plotScores` can be customized. 
 
-The other quality control estimate are based on the number of SNPs used in the computation. `r Rpackage("scoreInvHap")` allows having some missing measurements in the input data. However, this measurements are excluded from the computation of the scores. To reflect this issue, we have two measurements: the number of SNPs used in the computation and the proportion of non-missing measurements, or call rate:
+Another quality measure is based on the number of SNPs used in the computation. `r Rpackage("scoreInvHap")` allows individuals having different SNP coverages within the inverted regions. SNPs with no information are excluded from the computation of the scores. To reflect this we report a SNP call rate:
 
 ```{r}
 # Get Number of scores used
@@ -176,15 +136,15 @@ head(numSNPs(res))
 head(propSNPs(res))
 ```
 
-The number of SNPs must always be taken into account to evaluate the performance of the computation. It is highly recommended to use, at least, 15 SNPs in the computation. We have also included the function `plotCallRate` to plot the call rate of the samples:
+The number of SNPs must always be taken into account to evaluate the performance of the computation. It is highly recommended to use, at least, 15 SNPs in any inversion-calling. `plotCallRate`  can be used to visualize the call rate
 
 ```{r}
 plotCallRate(res, main = "Call Rate QC")
 ```
 
-The vertical line is the minimum recommended call rate to consider a sample. By default, it is set to 0.9 but can be changed with the parameter `callRate`. Again, `plotCallRate` relies on the base plot function, so we can customize the plot. 
+The vertical line is the minimum recommended call rate to consider a sample. By default, it is set to 0.9 but can be changed with the parameter `callRate`.
 
-The function `classification` have two parameters that selects samples based on these two QC parameters. The argument `minDiff` sets the minimum difference between the highest and the second highest score to consider a sample. The argument `callRate` sets the minimum call rate of a sample to pass the QC. By default, both arguments are set to 0 so all the sample are included: 
+The function `classification` have two parameters that selects samples based on these two QC parameters. The argument `minDiff` sets the minimum difference between the highest and the second highest score. The argument `callRate` sets the minimum call rate of a sample to pass the QC. By default, both arguments are set to 0 so all the sample are included: 
 
 ```{r}
 ## No filtering
@@ -193,21 +153,21 @@ length(classification(res))
 length(classification(res, minDiff = 0.1, callRate = 0.9))
 ```
 
-Finally, the function `classification` has the argument `inversion` that, when it is set to TRUE, the haplotype based classification is transformed to an inversion based classification. This is useful for inversions inv7p11.2 and invXq13.2 that have more than one haplotype per inversion status:
+Finally, the function `classification` has the argument `inversion` that, when it is set to FALSE,  haplotype-genotypes are called instead of inversion-genotuypes. This is useful for inversions that have more than one haplotype per inversion status:
 
 ```{r}
-## No filtering
+## Inversion classification
 table(classification(res))
-## QC filtering
-table(classification(res, inversion = TRUE))
+## Haplotype classification
+table(classification(res, inversion = FALSE))
 ```
 
 ## Imputed data
 
-When SNPs data are imputed, we obtain three different types of results: the best-guess, the dosage and the posterior probabilities. By default, `scoreInvHap` use the best-guess when computing the simmilarity scores. However, we can also use posterior probabilities setting the argument `imputed` to TRUE:
+When SNPs data are imputed, we obtain three different types of results: the best-guess, the dosage and the posterior probabilities. By default, `scoreInvHap` uses the best-guess when computing the similarity scores. However, we can also use posterior probabilities setting the argument `imputed` to TRUE:
 
 ```{r, classify imputed}
-res_imp <- scoreInvHap(SNPlist = vcf, SNPsR2 = SNPsR2$inv7p11.2, hetRefs = hetRefs$inv7p11.2, Refs = Refs$inv7p11.2, imputed = TRUE)
+res_imp <- scoreInvHap(SNPlist = vcf, inv = "inv7_005", imputed = TRUE)
 res_imp
 ```
 
@@ -222,7 +182,36 @@ table(PostProbs = classification(res_imp),
 
 There are two additional parameters of `scoreInvHap` than can reduce computing time: `R2` and `BPPARAM`. `R2` indicates the minimum R^2^ that a SNP should have with the inversion to be included in the score. The less number of SNPs the less time it takes. By default, all SNPs are included in the computation. On the other hand, `BPPARAM` requires an instance of `BiocParallelParam`, which allows to parallelize the computation of the score. You can find more information about this class in its help page (`?bpparam`) and in the `r Biocpkg("BiocParallel")` vignette. 
 
+
+# Inversions included in scoreInvHap
+
+| scoreInvHap Label | Locus | Length (Kb) | Num. Haplos | 
+|---|--:|--:|--:|
+| inv1_004 | 1p22.1 | 0.77 | 2 |
+| inv1_008 | 1q31.1 | 1.2  | 2 |
+| inv2_002 | 2p22.3 | 0.72 | 2 |
+| inv2_013 | 2q22.1 | 4.25 | 4 (1/3) |
+| inv3_003 | 3q26.1 | 2.28 | 4 (3/1) |
+| inv6_002 | 6p21.33 | 0.87 | 2 |
+| inv6_006 | 6q23.1 | 4.13 | 4 (3/1) |
+| inv7_003 | 7p14.3 | 5.25 | 4 (3/1) |
+| inv7_005 | 7p11.2 | 73.9 | 4 (2/2) |
+| inv7_011 | 7q11.22 | 12.7 | 2 |
+| inv7_014 | 7q36.1 | 2.08 | 2 |
+| inv8_001 | 8p23.1 | 3925 | 2 |
+| inv11_001 | 11p12 | 4.75 | 2 |
+| inv11_004 | 11q13.2 | 1.38 | 2 |
+| inv12_004 | 12q21.2 | 1.03 | 2 |
+| inv14_005 | 14q23.3 | 0.86 | 2 |
+| inv16_017 | 16q24.1 | 1.18 | 2 |
+| inv17_007 | 17q21.31 | 711 | 2 |
+| inv21_005 | 21q21.3 | 1.06 | 4 (3/1) |
+| invX_006 | Xq13.2 | 1.06 | 4 (3/1) |
+
+: (\#tab:table) Inversions included in scoreInvHap. Length: inversion length in Kb in hg19. Num. Haplos: Number of haplotypes supported by the inversion. In parenthesis, number of standard and inverted haplotypes for inversions with more than two haplotypes. 
+
+# sessionInfo
+
 ```{r}
 sessionInfo()
 ```
-

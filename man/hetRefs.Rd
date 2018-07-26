@@ -5,8 +5,7 @@
 \alias{hetRefs}
 \title{Heterozygote genotypes in the references}
 \format{List of character vectors with the heterozygous genotypes of the SNPs present included
-the region of four inversions (inv8p23.1, inv17q21.31, inv7p11.2 and invXq13.2).
-Each element is named with the SNPs names.}
+the region of 21 inversions. Each element is named with the SNPs names.}
 \usage{
 hetRefs
 }

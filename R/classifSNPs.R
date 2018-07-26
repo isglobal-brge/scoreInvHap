@@ -26,13 +26,13 @@
 #' \item{numSNPs: Vector with the number of SNPs used in each computation}
 #' }
 #' @examples
-#' ## Simulate a table of genotypes from ROIno.8.3
+#' ## Simulate a table of genotypes from inv8_001
 #' geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
 #'     nrow = 3, dimnames = list(letters[1:3],
 #'     c("rs141039449", "rs138092889", "rs138217047")))
 #'
 #' ## Run function using reference of inv8p23.1
-#' classifSNPs(geno, SNPsR2$inv8p23.1, Refs$inv8p23.1)
+#' classifSNPs(geno, SNPsR2$inv8_001, Refs$inv8_001)
 classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialParam()){
 
     # Select SNPs present in R2, references and genotypes

@@ -17,7 +17,7 @@
 #'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 #'
 #'     ## Create scoreInvHapRes class from pipeline
-#'     res <- scoreInvHap(vcf, inv = inv7_005)
+#'     res <- scoreInvHap(vcf, inv = "inv7_005")
 #'
 #'     ## Print object
 #'     res
@@ -51,11 +51,11 @@ setGeneric("classification", function(object, minDiff = 0, callRate = 0, inversi
 #' @param callRate Numeric with the threshold of the minimum call rate
 #' of the samples. Used to filter samples.
 #' @param inversion Logical. If true, haplotypes classification is adapted
-#' to return inversion status.
+#' to return inversion status. (Default: TRUE)
 setMethod(
     f = "classification",
     signature = "scoreInvHapRes",
-    definition = function(object, minDiff, callRate, inversion) {
+    definition = function(object, minDiff, callRate, inversion = TRUE) {
         res <- object@classification
         goodScores <- diffscores(object) > minDiff
         goodSNPs <- propSNPs(object) > callRate
