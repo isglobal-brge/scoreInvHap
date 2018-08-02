@@ -119,7 +119,7 @@ head(maxscores(res))
 head(diffscores(res))
 ```
 
-Classification is good when the highest score is close to 1 and the other scores are small. This means that the SNPs in the individual are almost identical to one of the reference genotypes and  different from the rest. We use the difference between the highest score and the second highest score as quality measure. We can have a visual evaluation of the quality parameters with the function `plotScores`:
+Classification is good when the highest score is close to 1 and the other scores are small. This means that the SNPs in the individual are almost identical to one of the reference genotypes and  different from the rest. We can use the difference between the highest score and the second highest score as a quality measure. We can have a visual evaluation of the quality parameters with the function `plotScores`:
 
 ```{r}
 plotScores(res, pch = 16, main = "QC based on scores")
@@ -144,7 +144,7 @@ plotCallRate(res, main = "Call Rate QC")
 
 The vertical line is the minimum recommended call rate to consider a sample. By default, it is set to 0.9 but can be changed with the parameter `callRate`.
 
-The function `classification` have two parameters that selects samples based on these two QC parameters. The argument `minDiff` sets the minimum difference between the highest and the second highest score. The argument `callRate` sets the minimum call rate of a sample to pass the QC. By default, both arguments are set to 0 so all the sample are included: 
+The function `classification` have two parameters that selects samples based on these two QC parameters. The argument `minDiff` sets the minimum difference between the highest and the second highest score. The argument `callRate` sets the minimum call rate of a sample to pass the QC. By default, both arguments are set to 0 so all the samples are included: 
 
 ```{r}
 ## No filtering
@@ -206,7 +206,7 @@ There are two additional parameters of `scoreInvHap` than can reduce computing t
 | inv14_005 | 14q23.3 | 0.86 | 2 |
 | inv17_007 | 17q21.31 | 711 | 2 |
 | inv21_005 | 21q21.3 | 1.06 | 4 (3/1) |
-| invX_006 | Xq13.2 | 1.06 | 4 (3/1) |
+| invX_006 | Xq13.2 | 90.8 | 4 (3/1) |
 
 : (\#tab:table) Inversions included in scoreInvHap. Length: inversion length in Kb in hg19. Num. Haplos: Number of haplotypes supported by the inversion. In parenthesis, number of standard and inverted haplotypes for inversions with more than two haplotypes. 
 
