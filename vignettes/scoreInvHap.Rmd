@@ -185,6 +185,9 @@ There are two additional parameters of `scoreInvHap` than can reduce computing t
 
 # Inversions included in scoreInvHap
 
+The following table describes the inversion includes in `scoreInvHap`:
+
+
 | scoreInvHap Label | Locus | Length (Kb) | Num. Haplos | 
 |---|--:|--:|--:|
 | inv1_004 | 1p22.1 | 0.77 | 2 |
@@ -209,6 +212,14 @@ There are two additional parameters of `scoreInvHap` than can reduce computing t
 | invX_006 | Xq13.2 | 90.8 | 4 (3/1) |
 
 : (\#tab:table) Inversions included in scoreInvHap. Length: inversion length in Kb in hg19. Num. Haplos: Number of haplotypes supported by the inversion. In parenthesis, number of standard and inverted haplotypes for inversions with more than two haplotypes. 
+
+
+This information is also available in `inversionGR`:
+```{r}
+data(inversionGR)
+inversionGR
+```
+
 
 # sessionInfo
 

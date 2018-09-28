@@ -1,7 +1,8 @@
 #' Classify inversions using identity
 #'
 #' This is the main function of `scoreInvHap` package. This function accepts
-#' SNPs data in a plink or a VCF format and compute the inversion prediction.
+#' SNPs data in a plink or a VCF format and compute the inversion prediction. The list
+#' of available inversions is included in a GenomicRanges called `inversionGR`.
 #'
 #' @export
 #' @param SNPlist List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
@@ -18,10 +19,18 @@
 #' @param verbose Should message be shown?
 #' @return A \code{scoreInvHap} object
 #' @examples
+#'
+#' # See list of inversions
+#' data(inversionGR)
+#' inversionGR
+#'
+#' ## Run method
 #' if(require(VariantAnnotation)){
 #'     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
 #'     res <- scoreInvHap(vcf, inv = "inv7_005")
 #' }
+#'
+#'
 scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
                         imputed = FALSE,
                         BPPARAM = BiocParallel::SerialParam(), verbose = FALSE){

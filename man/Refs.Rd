@@ -4,7 +4,7 @@
 \name{Refs}
 \alias{Refs}
 \title{Genotype frequency in references}
-\format{List of matrices for 21 inversions. Each matrix has the frequency of
+\format{List of matrices for 20 inversions. Each matrix has the frequency of
 each genotype in each haplotype.}
 \usage{
 Refs

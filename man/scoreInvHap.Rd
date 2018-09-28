@@ -14,7 +14,8 @@ scoreInvHap(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
 \item{SNPlist}{List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
 with the annotation)}
 
-\item{inv}{Character with the name of the inversion to genotype.}
+\item{inv}{Character with the name of the inversion to genotype. The available
+inversions are included in a table in the main vignette.}
 
 \item{SNPsR2}{Vector with the R2 of the SNPs of the region}
 
@@ -39,14 +40,23 @@ scoreInvHap can get the samples' inversion status of known inversions. scoreInvH
 and requires the following information about the inversion: genotype frequencies in the different
 inversion groups, R2 between the region SNPs and inversion status, heterozygote genotypes in the
 reference, allele frequencies in the reference population and inversion frequencies.
-The package include this data for 21 inversions.
+The package include this data for 20 inversions.
 
 This is the main function of `scoreInvHap` package. This function accepts
-SNPs data in a plink or a VCF format and compute the inversion prediction.
+SNPs data in a plink or a VCF format and compute the inversion prediction. The list
+of available inversions is included in a GenomicRanges called `inversionGR`.
 }
 \examples{
+
+# See list of inversions
+data(inversionGR)
+inversionGR
+
+## Run method
 if(require(VariantAnnotation)){
     vcf <- readVcf(system.file("extdata", "example.vcf", package = "scoreInvHap"), "hg19")
     res <- scoreInvHap(vcf, inv = "inv7_005")
 }
+
+
 }
