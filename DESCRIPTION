@@ -6,7 +6,7 @@ Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("au
 Description: scoreInvHap can get the samples' inversion status of known inversions. scoreInvHap uses SNP data as
  input and requires the following information about the inversion: genotype frequencies in the different
  haplotypes, R2 between the region SNPs and inversion status and heterozygote genotypes in the
- reference. The package include this data for 20 inversions (8p23 and 17q21.31).
+ reference. The package include this data for 20 inversions.
 Depends:
     R (>= 3.4.0)
 License: file LICENSE
