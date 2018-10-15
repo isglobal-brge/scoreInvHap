@@ -22,6 +22,6 @@ correctAlleleTable <- function(alleletable, hetRefs, map){
     alleletable$InvRef <- unlist(hetRefs)[rownames(alleletable)]
     wrongSNPs <- rownames(alleletable)[sapply(rownames(alleletable),
                                               function(x) !alleletable[x, 5] %in% alleletable[x, 1:3])]
-    alleletable <- alleletable[!rownames(alleletable) %in% wrongSNPs, ]
+    alleletable <- alleletable[!rownames(alleletable) %in% wrongSNPs, , drop = FALSE]
     alleletable
 }

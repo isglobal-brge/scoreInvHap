@@ -83,12 +83,24 @@ vcf <- readVcf(vcf_file, "hg19")
 vcf
 ```
 
-The object `vcf` contains 380 SNPs and 30 individuals. Now, we illustrate how to perform the inversion genotyping of inv7p11.2 for these data. The inversion calling requires two pieces of information:
+The object `vcf` contains 380 SNPs and 30 individuals. 
+
+`r Rpackage("scoreInvHap")` references were created using 1000 Genomes data. Thus, SNPs are annotated to the hg19 build in the plus strand. We have included a function that checks if input SNPs correspond to `r Rpackage("scoreInvHap")` references:
+
+```{r}
+check <- checkSNPs(vcf)
+check
+vcf <- check$genos
+```
+
+The function `checkSNPs` checks if the alleles in the SNP object are equal to those in `r Rpackage("scoreInvHap")` references. The function also tests if the frequencies are similar in the input data and in the references. `checkSNPs` returns a list with three elements. wrongAlleles are the SNPs with different alleles, wrongFreqs are the SNPs with different allele frequencies and `genos` is an object with the genotype data without SNPs failing any of the checks.  
+
+Now, we illustrate how to perform the inversion genotyping of inv7p11.2 for these data. The inversion calling requires two pieces of information:
 
 - sample genotypes and their annotation (argument `SNPlist`),
 - name of the inversion
 
-Currently, there are 21 inversion references included in `r Rpackage("scoreInvHap")`. We included a table with their coordinates and scoreInvHap labels at the end of this document. 
+Currently, there are 20 inversion references included in `r Rpackage("scoreInvHap")`. We included a table with their coordinates and scoreInvHap labels at the end of this document. 
 
 inv7p11.2 is labeled as `inv7_005` in `r Rpackage("scoreInvHap")`. We then obtain the  inversion genotypes for the 30 individuals in our dataset as follows  
 

@@ -11,8 +11,7 @@ scoreInvHap(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
   imputed = FALSE, BPPARAM = BiocParallel::SerialParam(), verbose = FALSE)
 }
 \arguments{
-\item{SNPlist}{List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
-with the annotation)}
+\item{SNPlist}{List with SNPs data from plink or \code{VCF-class}.}
 
 \item{inv}{Character with the name of the inversion to genotype. The available
 inversions are included in a table in the main vignette.}

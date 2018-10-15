@@ -5,8 +5,7 @@
 #' of available inversions is included in a GenomicRanges called `inversionGR`.
 #'
 #' @export
-#' @param SNPlist List with SNPs data. It should contain genotypes (a \code{SNPmatrix}) and map (a data.frame
-#' with the annotation)
+#' @param SNPlist List with SNPs data from plink or \code{VCF-class}.
 #' @param inv Character with the name of the inversion to genotype. The available
 #' inversions are included in a table in the main vignette.
 #' @param SNPsR2 Vector with the R2 of the SNPs of the region
@@ -42,9 +41,6 @@ scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
     }
 
     if (is(SNPlist, "VCF")){
-        dupSNPs <- rownames(SNPlist)[duplicated(rownames(SNPlist))]
-        SNPlist <- SNPlist[!rownames(SNPlist) %in% dupSNPs, ]
-
         if (imputed){
 
             ## Select SNPs with a R2 equal or higher than the threshold
@@ -60,14 +56,9 @@ scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
 
             SNPlist <- SNPlist[commonSNPs, ]
 
-            ## Filter SNPs with bad imputation quality
-            SNPlist <- SNPlist[VariantAnnotation::info(SNPlist)$R2 > 0.4, ]
-
             # Create alleleTable
             map <- prepareMap(SNPlist)
             alleletable <- getAlleleTable(map)
-            alleletable <- correctAlleleTable(alleletable = alleletable,
-                                              hetRefs = hetRefs, map = map)
 
             genos <- geno(SNPlist)$GP
 
@@ -128,8 +119,6 @@ scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
         message("Computing allele table")
     }
     alleletable <- getAlleleTable(map = map)
-    alleletable <- correctAlleleTable(alleletable = alleletable, hetRefs = hetRefs,
-                                      map = map)
 
     if (verbose){
         message("Computing genotype table")
