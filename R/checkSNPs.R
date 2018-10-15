@@ -64,10 +64,10 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         if(checkAlleleFreqs){
 
             ranges <- SummarizedExperiment::rowRanges(SNPobj)
-            ranges$REF <- as.character(ranges$REF)
+            ref <- as.character(ranges$REF)
 
             stats <- VariantAnnotation::snpSummary(SNPobj)
-            freq <- ifelse(ranges$REF == info$Ref, stats$a1Freq, stats$a2Freq)
+            freq <- ifelse(ref == info$Ref, stats$a1Freq, stats$a2Freq)
             freqMask <- abs(freq - info$Freq) > 0.2
 
             badFreq <- NULL
