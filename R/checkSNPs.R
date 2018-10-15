@@ -74,7 +74,7 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
             badFreq <- NULL
             if (sum(freqMask) > 0){
                 badFreq <- rownames(SNPobj)[freqMask]
-                SNPobj <- SNPobj[!badFreq, ]
+                SNPobj <- SNPobj[!freqMask, ]
                 info <- info[!freqMask, ]
             }
         }
