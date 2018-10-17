@@ -63,6 +63,7 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
             SNPobj <- SNPobj[!badMask, ]
             info <- info[!badMask, , drop = FALSE]
         }
+        badFreq <- NULL
 
         ## Check allele Freqs
         if(checkAlleleFreqs & nrow(SNPobj) > 1){
@@ -77,7 +78,6 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
             ## Remove variants without allele frequency
             freqMask[is.na(freqMask)] <- TRUE
 
-            badFreq <- NULL
             if (sum(freqMask) > 0){
                 badFreq <- rownames(SNPobj)[freqMask]
                 SNPobj <- SNPobj[!freqMask, ]
@@ -128,6 +128,7 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         info <- info[!badMask, , drop = FALSE]
     }
 
+    badFreq <- NULL
 
     ## Check allele Freqs
     if(checkAlleleFreqs & nrow(map) > 0){
@@ -139,7 +140,6 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         ## Remove variants without allele frequency
         freqMask[is.na(freqMask)] <- TRUE
 
-        badFreq <- NULL
         if (sum(freqMask) > 0){
             badFreq <- rownames(map)[freqMask]
             map <- map[!freqMask, , drop = FALSE]
