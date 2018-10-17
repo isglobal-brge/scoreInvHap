@@ -65,7 +65,7 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         }
 
         ## Check allele Freqs
-        if(checkAlleleFreqs & nrow(SNPobj) > 0){
+        if(checkAlleleFreqs & nrow(SNPobj) > 1){
 
             ranges <- SummarizedExperiment::rowRanges(SNPobj)
             ref <- as.character(ranges$REF)
