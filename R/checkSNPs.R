@@ -34,6 +34,9 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         ## Remove variants with length != 1
         SNPobj <- SNPobj[width(SNPobj) == 1, ]
 
+        ## Remove variants with more than one alternative allele
+        SNPobj <- SNPobj[lengths(rowRanges(SNPobj)$ALT) == 1, ]
+
         ## Filter SNPs with bad imputation quality
         if ("R2" %in% colnames(VariantAnnotation::info(SNPobj))){
             SNPobj <- SNPobj[VariantAnnotation::info(SNPobj)$R2 > 0.4, ]
