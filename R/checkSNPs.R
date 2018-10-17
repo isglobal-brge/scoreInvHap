@@ -74,6 +74,9 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
             freq <- ifelse(ref == info$Ref, stats$a1Freq, stats$a2Freq)
             freqMask <- abs(freq - info$Freq) > 0.2
 
+            ## Remove variants without allele frequency
+            freqMask[is.na(freqMask)] <- TRUE
+
             badFreq <- NULL
             if (sum(freqMask) > 0){
                 badFreq <- rownames(SNPobj)[freqMask]
@@ -132,6 +135,9 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         stats <- snpStats::col.summary(geno)
         freq <- ifelse(map$allele.1 == info$Ref, stats$RAF, 1 - stats$RAF)
         freqMask <- abs(freq - info$Freq) > 0.2
+
+        ## Remove variants without allele frequency
+        freqMask[is.na(freqMask)] <- TRUE
 
         badFreq <- NULL
         if (sum(freqMask) > 0){
