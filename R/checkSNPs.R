@@ -34,6 +34,9 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         ## Remove variants with length != 1
         SNPobj <- SNPobj[width(SNPobj) == 1, ]
 
+        ## Remove variants with more than one alternative allele
+        SNPobj <- SNPobj[lengths(rowRanges(SNPobj)$ALT) == 1, ]
+
         ## Filter SNPs with bad imputation quality
         # if ("R2" %in% colnames(VariantAnnotation::info(SNPobj))){
         #     SNPobj <- SNPobj[VariantAnnotation::info(SNPobj)$R2 > 0.4, ]
@@ -58,11 +61,12 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         if (sum(badMask) > 0){
             badSNPs <- rownames(SNPobj)[badMask]
             SNPobj <- SNPobj[!badMask, ]
-            info <- info[!badMask, ]
+            info <- info[!badMask, , drop = FALSE]
         }
+        badFreq <- NULL
 
         ## Check allele Freqs
-        if(checkAlleleFreqs){
+        if(checkAlleleFreqs & nrow(SNPobj) > 1){
 
             ranges <- SummarizedExperiment::rowRanges(SNPobj)
             ref <- as.character(ranges$REF)
@@ -71,11 +75,13 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
             freq <- ifelse(ref == info$Ref, stats$a1Freq, stats$a2Freq)
             freqMask <- abs(freq - info$Freq) > 0.2
 
-            badFreq <- NULL
+            ## Remove variants without allele frequency
+            freqMask[is.na(freqMask)] <- TRUE
+
             if (sum(freqMask) > 0){
                 badFreq <- rownames(SNPobj)[freqMask]
                 SNPobj <- SNPobj[!freqMask, ]
-                info <- info[!freqMask, ]
+                info <- info[!freqMask, , drop = FALSE]
             }
         }
 
@@ -106,8 +112,8 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
 
     ## Select SNPs in scoreInvHap
     selSNPs <- rownames(map)[rownames(map) %in% rownames(info)]
-    map <- map[selSNPs, ]
-    geno <- geno[, selSNPs]
+    map <- map[selSNPs, , drop = FALSE]
+    geno <- geno[, selSNPs, drop = FALSE]
 
     ## Check alleles
     info <- info[rownames(map),]
@@ -117,25 +123,28 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
     ## Remove SNPs with wrong alleles
     if (sum(badMask) > 0){
         badSNPs <- rownames(map)[badMask]
-        map <- map[!badMask, ]
-        geno <- geno[, !badMask]
-        info <- info[!badMask, ]
+        map <- map[!badMask, , drop = FALSE]
+        geno <- geno[, !badMask, drop = FALSE]
+        info <- info[!badMask, , drop = FALSE]
     }
 
+    badFreq <- NULL
 
     ## Check allele Freqs
-    if(checkAlleleFreqs){
+    if(checkAlleleFreqs & nrow(map) > 0){
 
         stats <- snpStats::col.summary(geno)
         freq <- ifelse(map$allele.1 == info$Ref, stats$RAF, 1 - stats$RAF)
         freqMask <- abs(freq - info$Freq) > 0.2
 
-        badFreq <- NULL
+        ## Remove variants without allele frequency
+        freqMask[is.na(freqMask)] <- TRUE
+
         if (sum(freqMask) > 0){
             badFreq <- rownames(map)[freqMask]
-            map <- map[!freqMask, ]
-            geno <- geno[, !freqMask]
-            info <- info[!freqMask, ]
+            map <- map[!freqMask, , drop = FALSE]
+            geno <- geno[, !freqMask, drop = FALSE]
+            info <- info[!freqMask, , drop = FALSE]
 
         }
     }
