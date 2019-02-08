@@ -16,9 +16,10 @@
 #' @export
 #'
 #' @param genos Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}
-#' @param R2 Vector with the R2 between the SNPs and the inversion status
+#' @param R2 Vector with the R2 between the SNPs and the inversion status.
 #' @param refs List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 #' different haplotypes.
+#' @param alleletable Data frame with the reference alleles computed with \code{getAlleleTable}.
 #' @param BPPARAM A \code{BiocParallelParam} instance. Used to parallelize computation
 #' @return List with the results:
 #' \itemize{
@@ -33,7 +34,8 @@
 #'
 #' ## Run function using reference of inv8p23.1
 #' classifSNPs(geno, SNPsR2$inv8_001, Refs$inv8_001)
-classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialParam()){
+classifSNPs <- function(genos, R2, refs, alleletable,
+                        BPPARAM = BiocParallel::SerialParam()){
 
     # Select SNPs present in R2, references and genotypes
     common <- Reduce(intersect, list(names(R2), names(refs), colnames(genos)))
@@ -43,9 +45,16 @@ classifSNPs <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialParam()){
     numrefs <- nrow(refs[[1]])
 
     # Compute the scores
-    res <-  BiocParallel::bplapply(rownames(genos), function(ind) {
-        computeScore(genos[ind, ], refs = refs, R2 = R2)
-    }, BPPARAM = BPPARAM)
+
+    ff <- function(ind, alleletable) {
+        genos <- getGenotypesTable(geno = genos[ind, , drop=FALSE],
+                                   allele = alleletable)
+        computeScore(genos, refs = refs, R2 = R2)
+    }
+
+    res <-  BiocParallel::bplapply(rownames(genos), ff,
+                                   alleletable=alleletable,
+                                   BPPARAM = BPPARAM)
     names(res) <- rownames(genos)
 
     scores <- t(vapply(res, `[[`, numeric(numrefs), "score"))

@@ -124,12 +124,12 @@ scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
         message("Computing genotype table")
     }
     geno <- SNPlist$genotypes[, rownames(alleletable)]
-    genos <- getGenotypesTable(geno = geno, allele = alleletable)
 
     if (verbose){
         message("Computing scores")
     }
-    classifScore <- classifSNPs(genos = genos, R2 = SNPsR2, refs = Refs,
+    classifScore <- classifSNPs(genos = geno, R2 = SNPsR2, refs = Refs,
+                                alleletable = alleletable,
                                 BPPARAM = BPPARAM)
     inv <- getInvStatus(scores = classifScore$scores)
     res <- new("scoreInvHapRes", classification = inv$class,
