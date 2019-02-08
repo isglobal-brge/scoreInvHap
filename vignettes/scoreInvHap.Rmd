@@ -109,7 +109,15 @@ res <- scoreInvHap(SNPlist = vcf, inv = "inv7_005")
 res
 ```
 
-The results of `scoreInvHap` are encapsulated in a object of class `scoreInvHapes`. This object contains the classification of the individuals into the inversion-genotypes, as well as the similarity scores. We can retrieve results with the `classification` and the  `scores`  functions 
+This function has a parameter called `BPPARAM` that allows paralell computing using `BiocParallel` infrastructure. For example, parallel computation using 8 cores would be run by executing 
+
+```{r, classify_par, eval=FALSE}
+res <- scoreInvHap(SNPlist = vcf, inv = "inv7_005",
+                   BPPARAM = BiocParallel::MulticoreParam(8))
+```
+
+
+The results of `scoreInvHap` are encapsulated in a object of class `scoreInvHapRes`. This object contains the classification of the individuals into the inversion-genotypes, as well as the similarity scores. We can retrieve results with the `classification` and the  `scores`  functions 
 
 ```{r, scoreInvHap results}
 # Get classification
