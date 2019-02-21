@@ -83,7 +83,7 @@ computeScore <- function(geno, refs, R2){
     haplos <- rownames(refs[[1]])
     numhaplos <- length(haplos)
 
-    ## If any SNP has a calling, return 0 for all scores
+    ## If none SNP has a calling, return 0 for all scores
     if(numSNPs == 0){
         score <- postprob <- rep(0, numhaplos)
         names(score) <- names(postprob) <- haplos
