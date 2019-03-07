@@ -11,7 +11,8 @@ classifSNPsImpute <- function(genos, R2, refs, BPPARAM = BiocParallel::SerialPar
 
     # Compute the scores and the probabilities
     score_list <- BiocParallel::bplapply(rownames(genos), function(snp)
-        genos[snp, , ] %*% t(refs[[snp]])*R2[snp], BPPARAM = BPPARAM)
+        tcrossprod(genos[snp, , ],refs[[snp]])*R2[snp],
+        BPPARAM = BPPARAM)
     scores <- Reduce(`+`, score_list)
     scores <- scores/sum(R2[rownames(genos)])
     snps <- rep(length(common), ncol(genos))
