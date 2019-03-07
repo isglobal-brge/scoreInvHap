@@ -37,10 +37,10 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         ## Remove variants with more than one alternative allele
         SNPobj <- SNPobj[lengths(rowRanges(SNPobj)$ALT) == 1, ]
 
-        ## Filter SNPs with bad imputation quality
-        # if ("R2" %in% colnames(VariantAnnotation::info(SNPobj))){
-        #     SNPobj <- SNPobj[VariantAnnotation::info(SNPobj)$R2 > 0.4, ]
-        # }
+        # Filter SNPs with bad imputation quality (R2 < 0.3)
+        if ("R2" %in% colnames(VariantAnnotation::info(SNPobj))){
+            SNPobj <- SNPobj[VariantAnnotation::info(SNPobj)$R2 > 0.3, ]
+        }
 
         ranges <- SummarizedExperiment::rowRanges(SNPobj)
         rownames(SNPobj) <- paste(seqnames(ranges), start(ranges), sep = ":")
