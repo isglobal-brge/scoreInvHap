@@ -12,7 +12,7 @@
 #' @param hetRefs Vector with the heterozygote form of the SNP in the inversion
 #' @param Refs List with the allele frequencies in the references
 #' @param R2 Vector with the R2 between the SNPs and the inversion status
-#' @param imputed Logical. If TRUE, scores are computed using posterior probabilities.
+#' @param probs Logical. If TRUE, scores are computed using posterior probabilities.
 #' If FALSE, scores are computed using best guess. Only applied when SNPlist is a VCF.
 #' @param BPPARAM A \code{BiocParallelParam} instance. Used to parallelize computation
 #' @param verbose Should message be shown?
@@ -31,7 +31,7 @@
 #'
 #'
 scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
-                        imputed = FALSE,
+                        probs = FALSE,
                         BPPARAM = BiocParallel::SerialParam(), verbose = FALSE){
 
     if (is.character(inv)){

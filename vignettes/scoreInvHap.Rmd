@@ -184,10 +184,10 @@ table(classification(res, inversion = FALSE))
 
 ## Imputed data
 
-When SNPs data are imputed, we obtain three different types of results: the best-guess, the dosage and the posterior probabilities. By default, `scoreInvHap` uses the best-guess when computing the similarity scores. However, we can also use posterior probabilities setting the argument `imputed` to TRUE:
+When SNPs data are imputed, we obtain three different types of results: the best-guess, the dosage and the posterior probabilities. By default, `scoreInvHap` uses the best-guess when computing the similarity scores. However, we can also use posterior probabilities setting the argument `probs` to TRUE:
 
 ```{r, classify imputed}
-res_imp <- scoreInvHap(SNPlist = vcf, inv = "inv7_005", imputed = TRUE)
+res_imp <- scoreInvHap(SNPlist = vcf, inv = "inv7_005", probs = TRUE)
 res_imp
 ```
 
