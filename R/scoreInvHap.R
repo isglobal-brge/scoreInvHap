@@ -41,7 +41,7 @@ scoreInvHap <- function(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
     }
 
     if (is(SNPlist, "VCF")){
-        if (imputed){
+        if (probs){
 
             ## Select SNPs with a R2 equal or higher than the threshold
             SNPsR2 <- SNPsR2[SNPsR2 >= R2]

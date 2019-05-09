@@ -8,7 +8,7 @@
 \title{scoreInvHap: package to get inversion status of predefined regions.}
 \usage{
 scoreInvHap(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
-  imputed = FALSE, BPPARAM = BiocParallel::SerialParam(), verbose = FALSE)
+  probs = FALSE, BPPARAM = BiocParallel::SerialParam(), verbose = FALSE)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data from plink or \code{VCF-class}.}
@@ -24,7 +24,7 @@ inversions are included in a table in the main vignette.}
 
 \item{R2}{Vector with the R2 between the SNPs and the inversion status}
 
-\item{imputed}{Logical. If TRUE, scores are computed using posterior probabilities.
+\item{probs}{Logical. If TRUE, scores are computed using posterior probabilities.
 If FALSE, scores are computed using best guess. Only applied when SNPlist is a VCF.}
 
 \item{BPPARAM}{A \code{BiocParallelParam} instance. Used to parallelize computation}
@@ -39,7 +39,7 @@ scoreInvHap can get the samples' inversion status of known inversions. scoreInvH
 and requires the following information about the inversion: genotype frequencies in the different
 inversion groups, R2 between the region SNPs and inversion status, heterozygote genotypes in the
 reference, allele frequencies in the reference population and inversion frequencies.
-The package include this data for 20 inversions.
+The package include this data for 21 inversions.
 
 This is the main function of `scoreInvHap` package. This function accepts
 SNPs data in a plink or a VCF format and compute the inversion prediction. The list

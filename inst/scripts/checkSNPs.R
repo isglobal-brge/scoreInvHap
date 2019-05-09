@@ -9,7 +9,7 @@ write.table(ids, file = "scoreInvHap_SNPs.txt", quote = FALSE, row.names = FALSE
             col.names = FALSE)
 
 ## Create variant list file from 1000 Genomes
-vcftools --gzvcf ~/data/PublicData/STUDY/1000GENOME/VCF/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz --snps scoreInvHap_SNPs.txt --recode --recode-INFO EUR_AF --out scoreInvHap.sites
+vcftools --gzvcf ~/PublicData/STUDY/1000GENOME/VCF/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz --snps scoreInvHap_SNPs.txt --recode --recode-INFO EUR_AF --out scoreInvHap.sites
 
 ## Create list positions of selected SNPs
 grep -vE "^#" scoreInvHap.sites.recode.vcf | awk '{print $1, $2, $2, $3}' > selSNPsPos.tab

@@ -5,17 +5,20 @@
 \alias{classifSNPsImpute}
 \title{Get similarity scores and probability}
 \usage{
-classifSNPs(genos, R2, refs, BPPARAM = BiocParallel::SerialParam())
+classifSNPs(genos, R2, refs, alleletable,
+  BPPARAM = BiocParallel::SerialParam())
 
 classifSNPsImpute(genos, R2, refs, BPPARAM = BiocParallel::SerialParam())
 }
 \arguments{
 \item{genos}{Matrix with the samples genotypes. It is the result of \code{getGenotypesTable}}
 
-\item{R2}{Vector with the R2 between the SNPs and the inversion status}
+\item{R2}{Vector with the R2 between the SNPs and the inversion status.}
 
 \item{refs}{List of matrices. Each matrix has, for an SNP, the frequencies of each genotype in the
 different haplotypes.}
+
+\item{alleletable}{Data frame with the reference alleles computed with \code{getAlleleTable}.}
 
 \item{BPPARAM}{A \code{BiocParallelParam} instance. Used to parallelize computation}
 }
@@ -40,13 +43,4 @@ by the R2 between the SNP and the haplotype classification.
 
 classifSNPsImpute is a version of classifSNPs that works with posterior probabilities
 of imputed genotypes.
-}
-\examples{
-## Simulate a table of genotypes from inv8_001
-geno <- matrix(c("CC", "GG", "AA", "CG", "NN", "AC", "GG", "AA", "CC"),
-    nrow = 3, dimnames = list(letters[1:3],
-    c("rs141039449", "rs138092889", "rs138217047")))
-
-## Run function using reference of inv8p23.1
-classifSNPs(geno, SNPsR2$inv8_001, Refs$inv8_001)
 }

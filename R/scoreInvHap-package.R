@@ -4,7 +4,7 @@
 #' and requires the following information about the inversion: genotype frequencies in the different
 #' inversion groups, R2 between the region SNPs and inversion status, heterozygote genotypes in the
 #' reference, allele frequencies in the reference population and inversion frequencies.
-#' The package include this data for 20 inversions.
+#' The package include this data for 21 inversions.
 #'
 #' @docType package
 #' @name scoreInvHap
