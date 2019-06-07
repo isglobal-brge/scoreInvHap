@@ -50,5 +50,7 @@ Temporary Items
 
 # Cache files
 SNPfier_cache
+*_files
 
-
+# sqlite
+*.sqlite

@@ -5,7 +5,7 @@ author:
   affiliation: 
   - &isglobal ISGlobal, Centre for Research in Environmental Epidemiology (CREAL)
   - &brge Bioinformatics Research Group in Epidemiolgy (BRGE)
-- name: Alejandro Cáceres
+- name: Alejandro Caceres
   affiliation: 
   - *isglobal
   - *brge
@@ -227,6 +227,7 @@ The following table describes the inversion includes in `scoreInvHap`:
 | inv12_004 | 12q21.2 | 19.3 | 2 |
 | inv12_006 | 12q21.2 | 1.03 | 3 (2/1) |
 | inv14_005 | 14q23.3 | 0.86 | 2 |
+| inv16_009 | 16p11.2 | 364.2 | 2 |
 | inv17_007 | 17q21.31 | 711 | 2 |
 | inv21_005 | 21q21.3 | 1.06 | 4 (3/1) |
 | invX_006 | Xq13.2 | 90.8 | 4 (3/1) |
