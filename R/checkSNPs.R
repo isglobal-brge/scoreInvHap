@@ -102,6 +102,7 @@ checkSNPs <- function(SNPobj, checkAlleleFreqs = TRUE){
         stop("map of SNPobj must contain columns allele.1 and allele.2")
     }
 
+    geno <- geno[, !is.na(map$allele.1)]
     map <- map[!is.na(map$allele.1), ]
 
     ## Change name to position
