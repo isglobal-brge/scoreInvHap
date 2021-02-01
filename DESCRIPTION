@@ -1,8 +1,9 @@
 Package: scoreInvHap
 Title: Get inversion status in predefined regions
 Version: 1.9.1
-Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = c("aut", "cre")),
-  person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"))
+Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = "aut"),
+  person("Dolors", "Pelegrí", , "dolors.pelegri@isglobal.org", role = "aut"),
+  person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = c("aut", "cre")))
 Description: scoreInvHap can get the samples' inversion status of known inversions. scoreInvHap uses SNP data as
  input and requires the following information about the inversion: genotype frequencies in the different
  haplotypes, R2 between the region SNPs and inversion status and heterozygote genotypes in the
