@@ -20,7 +20,7 @@ The methods described in the paper **"scoreInvHap: Inversion genotyping for geno
 
 The package uses the dataset `snpsVCF` available at our BRGE group package called [`brgedata`](https://github.com/isglobal-brge/brgedata). Vignette can be found [here](https://github.com/isglobal-brge/snpfier/blob/master/vignettes/scoreInvHap.html) 
 
-### Installation
+## Installation
 
 scoreInvHap stable version can be installed from Bioconductor
 
@@ -42,7 +42,7 @@ install.packages("devtools")
 devtools::install_github("isglobal-brge/scoreInvHap")
 ```
 
-### Usage
+## Usage
 
 In the folder vignettes, scoreInvHap.Rmd contains an example on how to use scoreInvHap. 
 
