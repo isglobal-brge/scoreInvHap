@@ -14,7 +14,7 @@
 #' @importFrom GenomicRanges mcols start
 #' @importFrom graphics abline hist plot
 #' @importFrom methods as is new
-#' @importFrom SummarizedExperiment rowRanges
+#' @importFrom SummarizedExperiment rowRanges width seqnames
 #' @importFrom VariantAnnotation info
 #' @importClassesFrom snpStats SnpMatrix
 NULL

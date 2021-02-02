@@ -4,16 +4,17 @@ Version: 1.9.1
 Authors@R: c(person("Carlos", "Ruiz", , "carlos.ruiz@isglobal.org", role = "aut"),
   person("Dolors", "Pelegrí", , "dolors.pelegri@isglobal.org", role = "aut"),
   person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = c("aut", "cre")))
+Maintainer: Juan R. González <juanr.gonzalez@isglobal.org>
 Description: scoreInvHap can get the samples' inversion status of known inversions. scoreInvHap uses SNP data as
  input and requires the following information about the inversion: genotype frequencies in the different
  haplotypes, R2 between the region SNPs and inversion status and heterozygote genotypes in the
  reference. The package include this data for 21 inversions.
 Depends:
-    R (>= 3.4.0)
+    R (>= 3.6.0)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.1
 Imports: Biostrings, methods, snpStats, VariantAnnotation,
         GenomicRanges, BiocParallel, graphics, SummarizedExperiment
 Suggests: testthat, knitr, BiocStyle, rmarkdown
