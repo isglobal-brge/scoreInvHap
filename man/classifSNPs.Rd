@@ -5,8 +5,13 @@
 \alias{classifSNPsImpute}
 \title{Get similarity scores and probability}
 \usage{
-classifSNPs(genos, R2, refs, alleletable,
-  BPPARAM = BiocParallel::SerialParam())
+classifSNPs(
+  genos,
+  R2,
+  refs,
+  alleletable,
+  BPPARAM = BiocParallel::SerialParam()
+)
 
 classifSNPsImpute(genos, R2, refs, BPPARAM = BiocParallel::SerialParam())
 }

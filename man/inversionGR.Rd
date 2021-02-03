@@ -4,7 +4,9 @@
 \name{inversionGR}
 \alias{inversionGR}
 \title{Inversions' description}
-\format{GenomicRanges with the inversions' description in the metada}
+\format{
+GenomicRanges with the inversions' description in the metada
+}
 \usage{
 inversionGR
 }

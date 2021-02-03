@@ -4,7 +4,9 @@
 \name{SNPsR2}
 \alias{SNPsR2}
 \title{R2 between the SNPs and the inversion status}
-\format{List of numeric vectors for 21 inversions}
+\format{
+List of numeric vectors for 21 inversions
+}
 \usage{
 SNPsR2
 }

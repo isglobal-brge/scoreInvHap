@@ -6,36 +6,26 @@
 \alias{scoreInvHapRes-class}
 \alias{scoreInvHapRes-methods}
 \alias{classification,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{classification}
 \alias{certainty,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{certainty}
 \alias{diffscores,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{diffscores}
 \alias{maxscores,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{maxscores}
 \alias{numSNPs,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{numSNPs}
 \alias{plotCallRate,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{plotCallRate}
 \alias{plotScores,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{plotScores}
 \alias{propSNPs,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{propSNPs}
 \alias{scores,scoreInvHapRes-method}
-\alias{scoreInvHapRes-methods}
 \alias{scores}
 \title{scoreInvHapRes instances}
 \usage{
-\S4method{classification}{scoreInvHapRes}(object, minDiff = 0, callRate = 0,
-  inversion = TRUE)
+\S4method{classification}{scoreInvHapRes}(object, minDiff = 0, callRate = 0, inversion = TRUE)
 
 \S4method{certainty}{scoreInvHapRes}(object)
 

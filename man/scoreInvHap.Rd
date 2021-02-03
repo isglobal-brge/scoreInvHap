@@ -3,12 +3,19 @@
 \docType{package}
 \name{scoreInvHap}
 \alias{scoreInvHap}
-\alias{scoreInvHap-package}
-\alias{scoreInvHap}
 \title{scoreInvHap: package to get inversion status of predefined regions.}
 \usage{
-scoreInvHap(SNPlist, inv = NULL, SNPsR2, hetRefs, Refs, R2 = 0,
-  probs = FALSE, BPPARAM = BiocParallel::SerialParam(), verbose = FALSE)
+scoreInvHap(
+  SNPlist,
+  inv = NULL,
+  SNPsR2,
+  hetRefs,
+  Refs,
+  R2 = 0,
+  probs = FALSE,
+  BPPARAM = BiocParallel::SerialParam(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{SNPlist}{List with SNPs data from plink or \code{VCF-class}.}

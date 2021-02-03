@@ -4,7 +4,9 @@
 \name{info}
 \alias{info}
 \title{SNP reference description}
-\format{data.frame}
+\format{
+data.frame
+}
 \usage{
 info
 }
